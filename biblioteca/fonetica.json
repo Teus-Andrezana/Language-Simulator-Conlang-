@@ -1,0 +1,1170 @@
+{
+  "vogal": {
+    "a": {
+      "classe": ["anterior", "aberta", "nao-arredondada"],
+      "possibilidades": ["a", "æ", "ä"],
+      "chances": [70, 10, 20]
+    },
+    "ä": {
+      "classe": ["central", "aberta", "nao-arredondada"],
+      "possibilidades": ["ä", "a", "ɑ"],
+      "chances": [60, 30, 10]
+    },
+    "ɑ": {
+      "classe": ["posterior", "aberta", "nao-arredondada"],
+      "possibilidades": ["ɑ", "ɒ", "ʌ", "ä"],
+      "chances": [40, 10, 20, 30]
+    },
+    "ɒ": {
+      "classe": ["posterior", "aberta", "arredondada"],
+      "possibilidades": ["ɒ", "ɔ", "ɑ"],
+      "chances": [40, 35, 25]
+    },
+    "ɶ": {
+      "classe": ["anterior", "aberta", "arredondada"],
+      "possibilidades": ["ɶ", "œ", "a"],
+      "chances": [450, 20, 35]
+    },
+    "æ": {
+      "classe": ["anterior", "quase-aberta", "nao-arredondada"],
+      "possibilidades": ["æ", "a", "ɛ"],
+      "chances": [80, 10, 10]
+    },
+    "ɐ": {
+      "classe": ["central", "quase-aberta", "nao-arredondada"],
+      "possibilidades": ["ɐ", "ə", "ä", "æ"],
+      "chances": [70, 10, 10, 10]
+    },
+    "ɛ": {
+      "classe": ["anterior", "semiaberta", "nao-arredondada"],
+      "possibilidades": ["ɛ", "e", "æ", "ɜ", "œ"],
+      "chances": [40, 30, 10, 10, 10]
+    },
+    "ɔ": {
+      "classe": ["posterior", "semiaberta", "arredondada"],
+      "possibilidades": ["ɔ", "o", "ɒ", "ʌ", "ɞ"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+    "œ": {
+      "classe": ["anterior", "semiaberta", "arredondada"],
+      "possibilidades": ["œ", "ø", "ɛ", "ɶ", "ɞ"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+    "ʌ": {
+      "classe": ["posterior", "semiaberta", "nao-arredondada"],
+      "possibilidades": ["ʌ", "ɤ", "ɑ", "ɔ", "ɜ"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+    "ɜ": {
+      "classe": ["central", "semiaberta", "nao-arredondada"],
+      "possibilidades": ["ɜ", "ə", "ɛ", "ʌ", "ɞ"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+    "ɞ": {
+      "classe": ["central", "semiaberta", "arredondada"],
+      "possibilidades": ["ɞ", "ɵ", "ɜ", "œ", "ɔ"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+    "ə": {
+      "classe": ["central", "media", "nao-arredondada"],
+      "possibilidades": ["ə", "ɐ", "ɜ", "ɘ", "ɵ"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+    "e": {
+      "classe": ["anterior", "semifechada", "nao-arredondada"],
+      "possibilidades": ["e", "ɛ", "ɘ", "ø"],
+      "chances": [70, 10, 10, 10]
+    },
+
+    "ø": {
+      "classe": ["anterior", "semifechada", "arredondada"],
+      "possibilidades": ["ø", "ʏ", "œ", "ɵ", "e"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+
+    "o": {
+      "classe": ["posterior", "semifechada", "arredondada"],
+      "possibilidades": ["o", "ɔ", "ɵ", "ɤ"],
+      "chances": [70, 10, 10, 10]
+    },
+
+    "ɤ": {
+      "classe": ["posterior", "semifechada", "nao-arredondada"],
+      "possibilidades": ["ɤ", "ɯ", "ʌ", "ɘ", "o"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+    "ɘ": {
+      "classe": ["central", "semifechada", "nao-arredondada"],
+      "possibilidades": ["ɘ", "ɨ", "e", "ɤ", "ɵ"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+    "ɵ": {
+      "classe": ["central", "semifechada", "arredondada"],
+      "possibilidades": ["ɵ", "ʉ", "ø", "o", "ɘ"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+
+    "ɪ": {
+      "classe": ["quase-anterior", "quase-fechada", "nao-arredondada"],
+      "possibilidades": ["ɪ", "i", "e", "ɛ", "ə"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+
+    "ʏ": {
+      "classe": ["quase-anterior", "quase-fechada", "arredondada"],
+      "possibilidades": ["ʏ", "y", "ø", "œ", "ɪ"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+
+    "ʊ": {
+      "classe": ["quase-posterior", "quase-fechada", "arredondada"],
+      "possibilidades": ["ʊ", "u", "o", "ɔ", "ə"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+
+    "i": {
+      "classe": ["anterior", "fechada", "nao-arredondada"],
+      "possibilidades": ["i", "e", "y", "ɨ", "j"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+    "y": {
+      "classe": ["anterior", "fechada", "arredondada"],
+      "possibilidades": ["y", "ø", "i", "ʉ", "ɥ"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+    "ɨ": {
+      "classe": ["central", "fechada", "nao-arredondada"],
+      "possibilidades": ["ɨ", "ɘ", "i", "ɯ", "ʉ"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+    "ʉ": {
+      "classe": ["central", "fechada", "arredondada"],
+      "possibilidades": ["ʉ", "ɵ", "y", "u", "ɨ"],
+      "chances": [50, 20, 10, 10, 10]
+    },
+    "u": {
+      "classe": ["posterior", "fechada", "arredondada"],
+      "possibilidades": ["u", "o", "ʉ", "ɯ"],
+      "chances": [60, 30, 5, 5]
+    },
+    "ɯ": {
+      "classe": ["posterior", "fechada", "nao-arredondada"],
+      "possibilidades": ["ɯ", "ɤ", "u", "ɨ"],
+      "chances": [70, 10, 10, 10]
+    }
+  },
+  "consoante": {
+    "p": {
+      "classe": ["bilabial", "oclusiva", "surda"],
+      "possibilidades": ["p", "pʰ", "b"],
+      "chances": [60, 10, 30]
+    },
+    "b": {
+      "classe": ["bilabial", "oclusiva", "sonora"],
+      "possibilidades": ["b", "β", "p"],
+      "chances": [60, 10, 30]
+    },
+    "t": {
+      "classe": ["alveolar", "oclusiva", "surda"],
+      "possibilidades": ["t", "d", "tʰ", "ʦ", "ʔ"],
+      "chances": [60, 10, 10, 10, 10]
+    },
+    "d": {
+      "classe": ["alveolar", "oclusiva", "sonora"],
+      "possibilidades": ["d", "t", "dʰ", "ʣ", "ɾ"],
+      "chances": [60, 10, 10, 10, 10]
+    },
+    "c": {
+      "classe": ["palatal", "oclusiva", "surda"],
+      "possibilidades": ["c", "ʨ", "ç", "ɟ"],
+      "chances": [60, 10, 10, 10]
+    },
+    "ɟ": {
+      "classe": ["palatal", "oclusiva", "sonora"],
+      "possibilidades": ["ɟ", "ʥ", "ʝ", "c"],
+      "chances": [70, 10, 10, 10]
+    },
+    "k": {
+      "classe": ["velar", "oclusiva", "surda"],
+      "possibilidades": ["k", "kʰ", "g", "x"],
+      "chances": [70, 10, 10, 10]
+    },
+    "g": {
+      "classe": ["velar", "oclusiva", "sonora"],
+      "possibilidades": ["g", "ɣ", "k", "gʰ"],
+      "chances": [70, 10, 10, 10]
+    },
+    "ʔ": {
+      "classe": ["glotal", "oclusiva", "surda"],
+      "possibilidades": ["ʔ"],
+      "chances": [100]
+    },
+    "q": {
+      "classe": ["uvular", "oclusiva", "surda"],
+      "possibilidades": ["q", "qʰ", "k", "ʔ", "ɢ"],
+      "chances": [60, 10, 10, 10, 10]
+    },
+    "ɢ": {
+      "classe": ["uvular", "oclusiva", "sonora"],
+      "possibilidades": ["g", "ʁ", "ɢ", "ɢʰ", "q"],
+      "chances": [60, 10, 10, 10, 10]
+    },
+    "ɸ": {
+      "classe": ["bilabial", "fricativa", "surda"],
+      "possibilidades": ["ɸ", "f", "pʰ", "w"],
+      "chances": [80, 10, 10, 5]
+    },
+    "β": {
+      "classe": ["bilabial", "fricativa", "sonora"],
+      "possibilidades": ["β", "v", "b", "w", "ɸ"],
+      "chances": [60, 10, 10, 10, 10]
+    },
+    "ʋ": {
+      "classe": ["labiodental", "aproximante", "sonora"],
+      "possibilidades": ["ʋ", "v", "w", "b", "f"],
+      "chances": [60, 10, 10, 10, 10]
+    },
+    "ʈ": {
+      "classe": ["retroflexa", "oclusiva", "surda"],
+      "possibilidades": ["ʈ", "ʈʰ", "ꭧ", "ɖ", "t"],
+      "chances": [60, 10, 10, 10, 10]
+    },
+    "ꭧ": {
+      "classe": ["retroflexa", "africada", "surda"],
+      "possibilidades": ["ꭧ", "ʧ", "ʈ", "ʂ"],
+      "chances": [70, 10, 10, 10]
+    },
+    "ɖ": {
+      "classe": ["retroflexa", "oclusiva", "sonora"],
+      "possibilidades": ["ɖ", "ɽ", "ɖʰ", "ʈ", "d"],
+      "chances": [60, 10, 10, 10, 10]
+    },
+    "ɽ": {
+      "classe": ["retroflexa", "flap", "sonora"],
+      "possibilidades": ["ɽ", "ɾ", "ɻ", "ɖ"],
+      "chances": [70, 10, 10, 10]
+    },
+    "ʂ": {
+      "classe": ["retroflexa", "fricativa", "surda"],
+      "possibilidades": ["ʂ", "ʃ", "ʐ", "x", "h"],
+      "chances": [80, 60, 30, 20, 6]
+    },
+    "ʐ": {
+      "classe": ["retroflexa", "fricativa", "sonora"],
+      "possibilidades": ["ʐ", "ʒ", "r", "ɻ", "ʂ"],
+      "chances": [80, 60, 40, 20, 6]
+    },
+    "f": {
+      "classe": ["labiodental", "fricativa", "surda"],
+      "possibilidades": ["f", "ɸ", "v"],
+      "chances": [80, 10, 10]
+    },
+    "v": {
+      "classe": ["labiodental", "fricativa", "sonora"],
+      "possibilidades": ["v", "β", "f", "ʋ"],
+      "chances": [70, 10, 10, 10]
+    },
+    "θ": {
+      "classe": ["dental", "fricativa", "surda"],
+      "possibilidades": ["θ", "s", "f", "t", "ð"],
+      "chances": [60, 10, 10, 10, 10]
+    },
+    "ð": {
+      "classe": ["dental", "fricativa", "sonora"],
+      "possibilidades": ["ð", "d", "z", "v", "θ"],
+      "chances": [60, 10, 10, 10, 10]
+    },
+    "s": {
+      "classe": ["alveolar", "fricativa", "surda"],
+      "possibilidades": ["s", "h", "ʦ", "z", "θ"],
+      "chances": [80, 50, 30, 20, 16]
+    },
+    "z": {
+      "classe": ["alveolar", "fricativa", "sonora"],
+      "possibilidades": ["z", "s", "ð", "ʣ"],
+      "chances": [80, 50, 20, 10]
+    },
+    "ʃ": {
+      "classe": ["pos-alveolar", "fricativa", "surda"],
+      "possibilidades": ["ʃ", "s", "h", "x", "ʒ", "ɕ"],
+      "chances": [80, 44, 30, 20, 16, 6]
+    },
+    "ʒ": {
+      "classe": ["pos-alveolar", "fricativa", "sonora"],
+      "possibilidades": ["ʒ", "z", "ʃ", "ʑ"],
+      "chances": [80, 30, 20, 16]
+    },
+    "ɕ": {
+      "classe": ["alveolo-palatal", "fricativa", "surda"],
+      "possibilidades": ["ɕ", "ʃ", "ç", "h", "ʑ"],
+      "chances": [80, 50, 30, 20, 16]
+    },
+    "ʑ": {
+      "classe": ["alveolo-palatal", "fricativa", "sonora"],
+      "possibilidades": ["ʑ", "ʒ", "ɕ"],
+      "chances": [80, 40, 20]
+    },
+    "ç": {
+      "classe": ["palatal", "fricativa", "surda"],
+      "possibilidades": ["ç", "ɕ", "x", "h", "ʝ"],
+      "chances": [80, 50, 40, 20, 6]
+    },
+    "ʝ": {
+      "classe": ["palatal", "fricativa", "sonora"],
+      "possibilidades": ["ʝ", "ʤ", "j"],
+      "chances": [60, 30, 10]
+    },
+    "x": {
+      "classe": ["velar", "fricativa", "surda"],
+      "possibilidades": ["x", "h", "ɣ"],
+      "chances": [70, 20, 10]
+    },
+    "ɣ": {
+      "classe": ["velar", "fricativa", "sonora"],
+      "possibilidades": ["ɣ", "g", "w", "h", "x"],
+      "chances": [50, 20, 15, 3, 2]
+    },
+    "χ": {
+      "classe": ["uvular", "fricativa", "surda"],
+      "possibilidades": ["χ", "x", "h", "ʁ"],
+      "chances": [80, 50, 30, 20]
+    },
+    "ʁ": {
+      "classe": ["uvular", "fricativa", "sonora"],
+      "possibilidades": ["ʁ", "ʀ", "χ", "ɣ"],
+      "chances": [80, 50, 30, 10]
+    },
+    "h": {
+      "classe": ["glotal", "fricativa", "surda"],
+      "possibilidades": ["h", "ɦ", "χ"],
+      "chances": [80, 70, 30]
+    },
+    "ɦ": {
+      "classe": ["glotal", "fricativa", "sonora"],
+      "possibilidades": ["ɦ", "h", "ʁ"],
+      "chances": [80, 40, 20]
+    },
+    "ʧ": {
+      "classe": ["pos-alveolar", "africada", "surda"],
+      "possibilidades": ["ʧ", "ʃ", "ʤ", "ʨ"],
+      "chances": [50, 30, 15, 5]
+    },
+    "ʤ": {
+      "classe": ["pos-alveolar", "africada", "sonora"],
+      "possibilidades": ["ʤ", "ʒ", "dʲ", "ʧ", "ʥ"],
+      "chances": [80, 50, 30, 20, 10]
+    },
+    "ʦ": {
+      "classe": ["alveolar", "africada", "surda"],
+      "possibilidades": ["ʦ", "s", "t", "ʣ"],
+      "chances": [80, 50, 30, 20]
+    },
+    "ʣ": {
+      "classe": ["alveolar", "africada", "sonora"],
+      "possibilidades": ["ʣ", "z", "d", "ʦ"],
+      "chances": [80, 50, 30, 20]
+    },
+    "ʨ": {
+      "classe": ["alveolo-palatal", "africada", "surda"],
+      "possibilidades": ["ʨ", "ɕ", "ʧ", "c", "ʥ"],
+      "chances": [80, 50, 30, 20, 10]
+    },
+    "ʥ": {
+      "classe": ["alveolo-palatal", "africada", "sonora"],
+      "possibilidades": ["ʥ", "ʑ", "ʤ", "ɟ", "ʨ"],
+      "chances": [80, 50, 30, 20, 10]
+    },
+    "m": {
+      "classe": ["bilabial", "nasal", "sonora"],
+      "possibilidades": ["m"],
+      "chances": [100]
+    },
+    "n": {
+      "classe": ["alveolar", "nasal", "sonora"],
+      "possibilidades": ["n"],
+      "chances": [100]
+    },
+    "ɲ": {
+      "classe": ["palatal", "nasal", "sonora"],
+      "possibilidades": ["ɲ", "n", "j", "ŋ"],
+      "chances": [80, 40, 20, 10]
+    },
+    "ŋ": {
+      "classe": ["velar", "nasal", "sonora"],
+      "possibilidades": ["ŋ", "n", "g"],
+      "chances": [80, 30, 20]
+    },
+    "ɳ": {
+      "classe": ["retroflexa", "nasal", "sonora"],
+      "possibilidades": ["ɳ", "n"],
+      "chances": [80, 20]
+    },
+    "l": {
+      "classe": ["alveolar", "lateral", "aproximante", "sonora"],
+      "possibilidades": ["l", "ɫ", "ɾ", "ɬ"],
+      "chances": [80, 40, 20, 10]
+    },
+    "ʎ": {
+      "classe": ["palatal", "lateral", "aproximante", "sonora"],
+      "possibilidades": ["ʎ", "l", "j", "ʝ"],
+      "chances": [80, 40, 25, 20]
+    },
+    "ɫ": {
+      "classe": ["alveolar", "lateral", "velarizada", "sonora"],
+      "possibilidades": ["ɫ", "w", "l", "ɣ"],
+      "chances": [80, 60, 40, 10]
+    },
+    "ɬ": {
+      "classe": ["alveolar", "lateral", "fricativa", "surda"],
+      "possibilidades": ["ɬ", "l"],
+      "chances": [80, 50]
+    },
+    "ɮ": {
+      "classe": ["alveolar", "lateral", "fricativa", "sonora"],
+      "possibilidades": ["ɮ", "l", "ɬ"],
+      "chances": [80, 50, 10]
+    },
+    "r": {
+      "classe": ["alveolar", "trill", "sonora"],
+      "possibilidades": ["r", "ɾ", "ʁ"],
+      "chances": [70, 40, 16]
+    },
+    "ɾ": {
+      "classe": ["alveolar", "tap", "sonora"],
+      "possibilidades": ["ɾ", "r", "l", "ɹ", "ɺ"],
+      "chances": [80, 40, 16, 10, 6]
+    },
+    "ʀ": {
+      "classe": ["uvular", "trill", "sonora"],
+      "possibilidades": ["ʀ", "ʁ", "χ", "r", "h", "ɐ"],
+      "chances": [76, 60, 28, 20, 10, 6]
+    },
+    "ɹ": {
+      "classe": ["alveolar", "aproximante", "sonora"],
+      "possibilidades": ["ɹ", "ɾ", "l", "w", "j"],
+      "chances": [80, 50, 30, 20, 20]
+    },
+    "ɻ": {
+      "classe": ["retroflexa", "aproximante", "sonora"],
+      "possibilidades": ["ɻ", "ɹ", "ʐ", "l", "j"],
+      "chances": [80, 60, 30, 20, 10]
+    },
+    "ɺ": {
+      "classe": ["alveolar", "lateral", "flap", "sonora"],
+      "possibilidades": ["ɾ", "l", "d", "ɹ", "ɺ"],
+      "chances": [80, 60, 30, 16, 4]
+    },
+    "w": {
+      "classe": ["labiovelar", "aproximante", "sonora"],
+      "possibilidades": ["w", "β", "ɣ"],
+      "chances": [80, 40, 30]
+    },
+    "j": {
+      "classe": ["palatal", "aproximante", "sonora"],
+      "possibilidades": ["j", "ʝ"],
+      "chances": [80, 24]
+    },
+    "ɥ": {
+      "classe": ["labiopalatal", "aproximante", "sonora"],
+      "possibilidades": ["ɥ", "w", "j", "y", "v", "β"],
+      "chances": [70, 44, 30, 20, 16, 10]
+    },
+    "pʰ": {
+      "classe": ["bilabial", "oclusiva", "surda", "aspirada"],
+      "possibilidades": ["ɸ", "p", "h", "pʰ"],
+      "chances": [90, 40, 30, 10]
+    },
+    "bʰ": {
+      "classe": ["bilabial", "oclusiva", "sonora", "aspirada"],
+      "possibilidades": ["β", "b", "pʰ", "bʰ"],
+      "chances": [90, 60, 30, 10]
+    },
+    "tʰ": {
+      "classe": ["alveolar", "oclusiva", "surda", "aspirada"],
+      "possibilidades": ["t", "h", "ʦʰ", "tʰ"],
+      "chances": [90, 40, 30, 20]
+    },
+    "dʰ": {
+      "classe": ["alveolar", "oclusiva", "sonora", "aspirada"],
+      "possibilidades": ["d", "ð", "ʣʰ", "dʰ", "tʰ", "h"],
+      "chances": [90, 60, 40, 30, 20, 10]
+    },
+    "kʰ": {
+      "classe": ["velar", "oclusiva", "surda", "aspirada"],
+      "possibilidades": ["x", "h", "k", "kʰ"],
+      "chances": [90, 50, 30, 10]
+    },
+    "gʰ": {
+      "classe": ["velar", "oclusiva", "sonora", "aspirada"],
+      "possibilidades": ["gʰ", "g", "ɣ", "kʰ"],
+      "chances": [80, 60, 40, 20]
+    },
+    "qʰ": {
+      "classe": ["uvular", "oclusiva", "surda", "aspirada"],
+      "possibilidades": ["χ", "h", "q", "qʰ"],
+      "chances": [90, 50, 30, 10]
+    },
+    "ɢʰ": {
+      "classe": ["uvular", "oclusiva", "sonora", "aspirada"],
+      "possibilidades": ["ʁ", "ɢ", "qʰ", "ɢʰ"],
+      "chances": [90, 40, 30, 10]
+    },
+    "ɾʰ": {
+      "classe": ["alveolar", "flap", "sonora", "aspirada"],
+      "possibilidades": ["ɾ", "dʰ", "r", "ɾʰ"],
+      "chances": [90, 50, 30, 10]
+    },
+    "rʰ": {
+      "classe": ["alveolar", "trill", "sonora", "aspirada"],
+      "possibilidades": ["r", "ɾ", "h", "rʰ"],
+      "chances": [90, 40, 30, 10]
+    },
+    "βʰ": {
+      "classe": ["bilabial", "fricativa", "sonora", "aspirada"],
+      "possibilidades": ["β", "ɸ", "bʰ", "βʰ"],
+      "chances": [90, 50, 30, 10]
+    },
+    "fʰ": {
+      "classe": ["labiodental", "fricativa", "surda", "aspirada"],
+      "possibilidades": ["f", "pʰ", "ɸ", "h", "v"],
+      "chances": [40, 30, 15, 10, 5]
+    },
+    "vʰ": {
+      "classe": ["labiodental", "fricativa", "sonora", "aspirada"],
+      "possibilidades": ["v", "f", "bʰ", "ʋ", "h"],
+      "chances": [40, 25, 15, 10, 10]
+    },
+    "ʋʰ": {
+      "classe": ["labiodental", "aproximante", "sonora", "aspirada"],
+      "possibilidades": ["f", "ʋ", "v", "w", "h"],
+      "chances": [80, 50, 40, 20, 10]
+    },
+    "ɥʰ": {
+      "classe": ["labiopalatal", "aproximante", "sonora", "aspirada"],
+      "possibilidades": ["ɥ", "w", "j", "ɥʰ"],
+      "chances": [90, 50, 40, 10]
+    },
+    "ʦʰ": {
+      "classe": ["alveolar", "africada", "surda", "aspirada"],
+      "possibilidades": ["ʦ", "s", "tʰ", "ʦʰ"],
+      "chances": [80, 50, 30, 10]
+    },
+    "ʣʰ": {
+      "classe": ["alveolar", "africada", "sonora", "aspirada"],
+      "possibilidades": ["ʣ", "ʦʰ", "z", "dʰ", "ʣʰ"],
+      "chances": [80, 50, 40, 20, 10]
+    },
+    "ʧʰ": {
+      "classe": ["pos-alveolar", "africada", "surda", "aspirada"],
+      "possibilidades": ["ʧ", "ʃ", "cʰ", "ʨʰ", "ʧʰ"],
+      "chances": [80, 50, 30, 20, 10]
+    },
+    "ʤʰ": {
+      "classe": ["pos-alveolar", "africada", "sonora", "aspirada"],
+      "possibilidades": ["ʤ", "ʧʰ", "ʒ", "ʥʰ", "ʤʰ"],
+      "chances": [80, 60, 40, 20, 10]
+    },
+    "ʨʰ": {
+      "classe": ["alveolo-palatal", "africada", "surda", "aspirada"],
+      "possibilidades": ["ʨ", "ɕ", "cʰ", "ʧʰ", "ʨʰ"],
+      "chances": [80, 50, 30, 20, 10]
+    },
+    "sʰ": {
+      "classe": ["alveolar", "fricativa", "surda", "aspirada"],
+      "possibilidades": ["sʰ", "s", "h", "ʃ", "ʦʰ"],
+      "chances": [40, 38, 12, 6, 4]
+    },
+    "zʰ": {
+      "classe": ["alveolar", "fricativa", "sonora", "aspirada"],
+      "possibilidades": ["z", "s", "h", "sʰ", "ʣʰ", "zʰ"],
+      "chances": [35, 25, 15, 10, 10, 5]
+    },
+    "ʃʰ": {
+      "classe": ["pos-alveolar", "fricativa", "surda", "aspirada"],
+      "possibilidades": ["ʃʰ", "ʃ", "h", "sʰ", "ʧʰ"],
+      "chances": [40, 36, 12, 8, 4]
+    },
+    "mʰ": {
+      "classe": ["bilabial", "nasal", "sonora", "aspirada"],
+      "possibilidades": ["m", "mʰ", "mb", "mp", "h"],
+      "chances": [60, 15, 10, 10, 5]
+    },
+    "nʰ": {
+      "classe": ["alveolar", "nasal", "sonora", "aspirada"],
+      "possibilidades": ["n", "nʰ", "h"],
+      "chances": [45, 15, 5]
+    },
+    "ɲʰ": {
+      "classe": ["palatal", "nasal", "sonora", "aspirada"],
+      "possibilidades": ["ɲ", "j", "n", "h"],
+      "chances": [60, 20, 15, 5]
+    },
+    "lʰ": {
+      "classe": ["alveolar", "lateral", "aspirada"],
+      "possibilidades": ["l", "l", "ɬ", "lh", "h"],
+      "chances": [35, 30, 20, 10, 5]
+    },
+    "ɫʰ": {
+      "classe": ["alveolar", "lateral", "velarizado", "sonora", "aspirada"],
+      "possibilidades": ["ɫ", "x", "w", "h", "ɫ"],
+      "chances": [30, 25, 20, 15, 10]
+    },
+    "ʒʰ": {
+      "classe": ["pos-alveolar", "fricativa", "sonora", "aspirada"],
+      "possibilidades": ["ʒ", "ʃ", "dʒ", "j", "z"],
+      "chances": [35, 30, 20, 10, 5]
+    },
+    "θʰ": {
+      "classe": ["dental", "fricativa", "surda", "aspirada"],
+      "possibilidades": ["θ", "tʰ", "s", "h", "f"],
+      "chances": [35, 30, 20, 10, 5]
+    },
+    "ðʰ": {
+      "classe": ["dental", "fricativa", "sonora", "aspirada"],
+      "possibilidades": ["ð", "ðː"],
+      "chances": [80, 20]
+    },
+    "ɸʰ": {
+      "classe": ["bilabial", "fricativa", "surda", "aspirada"],
+      "possibilidades": ["ɸʰ", "pʰ", "ɸ", "h", "w"],
+      "chances": [60, 40, 35, 10, 5]
+    },
+    "ʝʰ": {
+      "classe": ["palatal", "fricativa", "sonora", "aspirada"],
+      "possibilidades": ["ʝʰ", "ʝ", "ç", "j", "h"],
+      "chances": [55, 85, 70, 60, 40]
+    },
+    "ŋʰ": {
+      "classe": ["velar", "nasal", "sonora", "aspirada"],
+      "possibilidades": ["ŋ", "ŋʰ", "h"],
+      "chances": [35, 60, 5]
+    },
+    "ɽʰ": {
+      "classe": ["retroflexa", "tap", "sonora", "aspirada"],
+      "possibilidades": ["ɽʰ", "ɽ", "ɖʰ", "ʐ", "h"],
+      "chances": [60, 85, 40, 30, 10]
+    },
+    "ʈʰ": {
+      "classe": ["retroflexa", "oclusiva", "surda", "aspirada"],
+      "possibilidades": ["ʈʰ", "ʈ", "tʰ", "ʂ", "h"],
+      "chances": [80, 50, 40, 20, 10]
+    },
+    "ɖʰ": {
+      "classe": ["retroflexa", "oclusiva", "sonora", "aspirada"],
+      "possibilidades": ["ɖʰ", "ɖ", "dʰ", "ʐ", "h"],
+      "chances": [80, 50, 40, 20, 10]
+    },
+    "ʂʰ": {
+      "classe": ["retroflexa", "fricativa", "surda", "aspirada"],
+      "possibilidades": ["ʂʰ", "ʂ", "sʰ", "ʃ", "x"],
+      "chances": [80, 50, 40, 20, 10]
+    },
+    "ʐʰ": {
+      "classe": ["retroflexa", "fricativa", "sonora", "aspirada"],
+      "possibilidades": ["ʐʰ", "ʐ", "zʰ", "ʒ", "ɣ"],
+      "chances": [80, 50, 40, 20, 10]
+    },
+    "ɹʰ": {
+      "classe": ["alveolar", "aproximante", "sonora", "aspirada"],
+      "possibilidades": ["ɹ", "h", "s", "θ"],
+      "chances": [80, 50, 30, 20]
+    },
+    "ɻʰ": {
+      "classe": ["retroflexa", "aproximante", "sonora", "aspirada"],
+      "possibilidades": ["ɻ", "h", "ʂ", "x"],
+      "chances": [80, 60, 45, 15]
+    },
+    "ɳʰ": {
+      "classe": ["retroflexa", "nasal", "sonora", "aspirada"],
+      "possibilidades": ["ɳʰ", "ɳ", "ɖʰ", "nʰ", "h"],
+      "chances": [55, 85, 40, 60, 20]
+    },
+    "ɣʰ": {
+      "classe": ["velar", "fricativa", "sonora", "aspirada"],
+      "possibilidades": ["ɣʰ", "ɣ", "x", "h", "g"],
+      "chances": [50, 80, 70, 60, 40]
+    },
+    "pʷ": {
+      "classe": ["bilabial", "oclusiva", "surda", "labializada"],
+      "possibilidades": ["pʷ", "p", "ɸ", "f", "b", "w"],
+      "chances": [40, 32, 12, 8, 5, 3]
+    },
+    "bʷ": {
+      "classe": ["bilabial", "oclusiva", "sonora", "labializada"],
+      "possibilidades": ["bʷ", "b", "β", "v", "w", "p"],
+      "chances": [40, 28, 14, 10, 5, 3]
+    },
+    "tʷ": {
+      "classe": ["alveolar", "oclusiva", "surda", "labializada"],
+      "possibilidades": ["tʷ", "t", "kʷ", "d", "ʦʷ"],
+      "chances": [44, 32, 12, 8, 4]
+    },
+    "dʷ": {
+      "classe": ["alveolar", "oclusiva", "sonora", "labializada"],
+      "possibilidades": ["dʷ", "d", "gʷ", "t", "w"],
+      "chances": [44, 32, 12, 8, 4]
+    },
+    "kʷ": {
+      "classe": ["velar", "oclusiva", "surda", "labializada"],
+      "possibilidades": ["kʷ", "k", "p", "xʷ", "g", "ʔʷ"],
+      "chances": [38, 28, 16, 10, 5, 3]
+    },
+    "gʷ": {
+      "classe": ["velar", "oclusiva", "sonora", "labializada"],
+      "possibilidades": ["gʷ", "g", "b", "ɣʷ", "w", "k"],
+      "chances": [38, 26, 16, 10, 7, 3]
+    },
+    "qʷ": {
+      "classe": ["uvular", "oclusiva", "surda", "labializada"],
+      "possibilidades": ["qʷ", "q", "kʷ", "χʷ", "ʔʷ"],
+      "chances": [40, 28, 18, 10, 4]
+    },
+    "ɢʷ": {
+      "classe": ["uvular", "oclusiva", "sonora", "labializada"],
+      "possibilidades": ["ɢʷ", "ɢ", "gʷ", "ʁʷ", "w"],
+      "chances": [40, 28, 18, 10, 4]
+    },
+    "ɸʷ": {
+      "classe": ["bilabial", "fricativa", "surda", "labializada"],
+      "possibilidades": ["ɸʷ", "ɸ", "f", "w"],
+      "chances": [40, 38, 16, 6]
+    },
+    "βʷ": {
+      "classe": ["bilabial", "fricativa", "sonora", "labializada"],
+      "possibilidades": ["βʷ", "β", "w", "v"],
+      "chances": [38, 35, 18, 9]
+    },
+    "sʷ": {
+      "classe": ["alveolar", "fricativa", "surda", "labializada"],
+      "possibilidades": ["sʷ", "s", "ʃ", "xʷ", "h"],
+      "chances": [42, 32, 12, 8, 6]
+    },
+    "zʷ": {
+      "classe": ["alveolar", "fricativa", "sonora", "labializada"],
+      "possibilidades": ["zʷ", "z", "ʒ", "ɣʷ"],
+      "chances": [44, 34, 14, 8]
+    },
+    "ʃʷ": {
+      "classe": ["pos-alveolar", "fricativa", "surda", "labializada"],
+      "possibilidades": ["ʃʷ", "ʃ", "xʷ", "ʧʷ"],
+      "chances": [44, 38, 12, 6]
+    },
+    "ʒʷ": {
+      "classe": ["pos-alveolar", "fricativa", "sonora", "labializada"],
+      "possibilidades": ["ʒʷ", "ʒ", "ɣʷ", "ʤʷ"],
+      "chances": [44, 38, 12, 6]
+    },
+    "xʷ": {
+      "classe": ["velar", "fricativa", "surda", "labializada"],
+      "possibilidades": ["xʷ", "x", "f", "ʃ", "h", "w"],
+      "chances": [38, 26, 14, 10, 8, 4]
+    },
+    "ɣʷ": {
+      "classe": ["velar", "fricativa", "sonora", "labializada"],
+      "possibilidades": ["ɣʷ", "ɣ", "w", "v", "gʷ"],
+      "chances": [36, 28, 22, 10, 4]
+    },
+    "χʷ": {
+      "classe": ["uvular", "fricativa", "surda", "labializada"],
+      "possibilidades": ["χʷ", "χ", "xʷ", "f", "h"],
+      "chances": [38, 28, 18, 10, 6]
+    },
+    "ʁʷ": {
+      "classe": ["uvular", "fricativa", "sonora", "labializada"],
+      "possibilidades": ["ʁʷ", "ʁ", "ɣʷ", "w", "v"],
+      "chances": [38, 28, 18, 10, 6]
+    },
+    "hʷ": {
+      "classe": ["glotal", "fricativa", "surda", "labializada"],
+      "possibilidades": ["hʷ", "h", "w", "ɸ", "f"],
+      "chances": [36, 28, 18, 10, 5]
+    },
+    "ʦʷ": {
+      "classe": ["alveolar", "africada", "surda", "labializada"],
+      "possibilidades": ["ʦʷ", "ʦ", "sʷ", "ʧʷ"],
+      "chances": [44, 34, 14, 8]
+    },
+    "ʧʷ": {
+      "classe": ["pos-alveolar", "africada", "surda", "labializada"],
+      "possibilidades": ["ʧʷ", "ʧ", "ʃʷ", "kʷ"],
+      "chances": [44, 34, 14, 8]
+    },
+    "ʣʷ": {
+      "classe": ["alveolar", "africada", "sonora", "labializada"],
+      "possibilidades": ["ʣ", "zʷ", "dʷ", "w", "ʣʷ"],
+      "chances": [80, 55, 40, 15, 10]
+    },
+    "ʤʷ": {
+      "classe": ["pos-alveolar", "africada", "sonora", "labializada"],
+      "possibilidades": ["ʤʷ", "ʤ", "ʒʷ", "gʷ"],
+      "chances": [44, 34, 14, 8]
+    },
+    "mʷ": {
+      "classe": ["bilabial", "nasal", "sonora", "labializada"],
+      "possibilidades": ["mʷ", "m", "w"],
+      "chances": [42, 48, 10]
+    },
+    "nʷ": {
+      "classe": ["alveolar", "nasal", "sonora", "labializada"],
+      "possibilidades": ["nʷ", "n", "m", "ŋʷ", "w"],
+      "chances": [40, 32, 14, 10, 4]
+    },
+    "ŋʷ": {
+      "classe": ["velar", "nasal", "sonora", "labializada"],
+      "possibilidades": ["ŋʷ", "ŋ", "nʷ", "w", "m"],
+      "chances": [40, 32, 14, 8, 6]
+    },
+    "lʷ": {
+      "classe": ["alveolar", "lateral", "aproximante", "sonora", "labializada"],
+      "possibilidades": ["lʷ", "l", "ɫ", "w"],
+      "chances": [40, 36, 16, 8]
+    },
+    "ʎʷ": {
+      "classe": ["palatal", "lateral", "aproximante", "sonora", "labializada"],
+      "possibilidades": ["ɥ", "w", "lʷ", "y", "ʎ"],
+      "chances": [40, 20, 20, 10, 10]
+    },
+    "rʷ": {
+      "classe": ["alveolar", "trill", "sonora", "labializada"],
+      "possibilidades": ["rʷ", "r", "ɾʷ", "w"],
+      "chances": [42, 38, 12, 8]
+    },
+    "ɾʷ": {
+      "classe": ["alveolar", "tap", "sonora", "labializada"],
+      "possibilidades": ["ɾʷ", "ɾ", "rʷ", "w"],
+      "chances": [42, 38, 12, 8]
+    },
+    "ʈʷ": {
+      "classe": ["retroflexa", "oclusiva", "surda", "labializada"],
+      "possibilidades": ["ʈʷ", "ʈ", "tʷ", "p", "w"],
+      "chances": [80, 50, 30, 24, 16]
+    },
+    "ɖʷ": {
+      "classe": ["retroflexa", "oclusiva", "sonora", "labializada"],
+      "possibilidades": ["ɖʷ", "ɖ", "dʷ", "b", "w"],
+      "chances": [80, 50, 30, 24, 16]
+    },
+    "ʂʷ": {
+      "classe": ["retroflexa", "fricativa", "surda", "labializada"],
+      "possibilidades": ["ʂʷ", "ʂ", "ʃʷ", "f", "w"],
+      "chances": [80, 50, 30, 24, 16]
+    },
+    "ʐʷ": {
+      "classe": ["retroflexa", "fricativa", "sonora", "labializada"],
+      "possibilidades": ["ʐʷ", "ʐ", "ʒʷ", "v", "w"],
+      "chances": [80, 50, 30, 24, 16]
+    },
+    "ɳʷ": {
+      "classe": ["retroflexa", "nasal", "sonora", "labializada"],
+      "possibilidades": ["ɳ", "nʷ", "m", "ɳʷ", "w"],
+      "chances": [65, 80, 60, 30, 20]
+    },
+    "ɹʷ": {
+      "classe": ["alveolar", "aproximante", "sonora", "labializada"],
+      "possibilidades": ["ɹʷ", "ɹ", "w", "lʷ", "v"],
+      "chances": [80, 50, 30, 24, 16]
+    },
+    "ɻʷ": {
+      "classe": ["retroflexa", "aproximante", "sonora", "labializada"],
+      "possibilidades": ["ɻʷ", "ɻ", "w", "ɹʷ", "v"],
+      "chances": [80, 50, 30, 24, 16]
+    },
+    "ʋʷ": {
+      "classe": ["labiodental", "aproximante", "sonora", "labializada"],
+      "possibilidades": ["w", "ʋʷ", "ʋ", "v", "b"],
+      "chances": [80, 50, 30, 24, 16]
+    },
+    "ɽʷ": {
+      "classe": ["retroflexa", "tap", "sonora", "labializada"],
+      "possibilidades": ["ɽʷ", "ɽ", "ɾʷ", "w", "v"],
+      "chances": [60, 85, 55, 30, 15]
+    },
+    "pʲ": {
+      "classe": ["bilabial", "oclusiva", "surda", "palatalizada"],
+      "possibilidades": ["pʲ", "p", "ɸʲ", "f", "b"],
+      "chances": [42, 32, 14, 8, 4]
+    },
+    "bʲ": {
+      "classe": ["bilabial", "oclusiva", "sonora", "palatalizada"],
+      "possibilidades": ["bʲ", "b", "βʲ", "v", "p"],
+      "chances": [42, 30, 16, 8, 4]
+    },
+    "tʲ": {
+      "classe": ["alveolar", "oclusiva", "surda", "palatalizada"],
+      "possibilidades": ["tʲ", "t", "ʧ", "ʦ", "s", "dʲ"],
+      "chances": [36, 24, 20, 12, 5, 3]
+    },
+    "dʲ": {
+      "classe": ["alveolar", "oclusiva", "sonora", "palatalizada"],
+      "possibilidades": ["dʲ", "d", "ʤ", "ʣ", "z", "t"],
+      "chances": [36, 24, 20, 12, 5, 3]
+    },
+    "kʲ": {
+      "classe": ["velar", "oclusiva", "surda", "palatalizada"],
+      "possibilidades": ["kʲ", "k", "ʧ", "tʲ", "ç", "x", "g"],
+      "chances": [34, 22, 18, 12, 8, 4, 2]
+    },
+    "gʲ": {
+      "classe": ["velar", "oclusiva", "sonora", "palatalizada"],
+      "possibilidades": ["gʲ", "g", "ʤ", "dʲ", "ʝ", "ɣ", "k"],
+      "chances": [34, 22, 18, 12, 8, 4, 2]
+    },
+    "qʲ": {
+      "classe": ["uvular", "oclusiva", "surda", "palatalizada"],
+      "possibilidades": ["qʲ", "q", "kʲ", "χʲ"],
+      "chances": [40, 28, 20, 12]
+    },
+    "ɥʲ": {
+      "classe": ["labial-palatal", "aproximante", "sonora", "palatalizada"],
+      "possibilidades": ["ɥʲ", "j", "ɥ", "ʝ", "i"],
+      "chances": [60, 80, 70, 40, 30]
+    },
+    "sʲ": {
+      "classe": ["alveolar", "fricativa", "surda", "palatalizada"],
+      "possibilidades": ["sʲ", "s", "ɕ", "ʃ", "h"],
+      "chances": [38, 26, 20, 12, 4]
+    },
+    "zʲ": {
+      "classe": ["alveolar", "fricativa", "sonora", "palatalizada"],
+      "possibilidades": ["zʲ", "z", "ʑ", "ʒ", "ʝ"],
+      "chances": [38, 26, 20, 12, 4]
+    },
+    "xʲ": {
+      "classe": ["velar", "fricativa", "surda", "palatalizada"],
+      "possibilidades": ["xʲ", "x", "ç", "ʃ", "h"],
+      "chances": [36, 24, 24, 12, 4]
+    },
+    "ɣʲ": {
+      "classe": ["velar", "fricativa", "sonora", "palatalizada"],
+      "possibilidades": ["ɣʲ", "ɣ", "ʝ", "j", "ʒ"],
+      "chances": [36, 24, 22, 14, 4]
+    },
+    "χʲ": {
+      "classe": ["uvular", "fricativa", "surda", "palatalizada"],
+      "possibilidades": ["χʲ", "χ", "xʲ", "ç"],
+      "chances": [40, 28, 20, 12]
+    },
+    "ʁʲ": {
+      "classe": ["uvular", "fricativa", "sonora", "palatalizada"],
+      "possibilidades": ["ʁʲ", "ʁ", "ɣʲ", "ʝ"],
+      "chances": [40, 28, 20, 12]
+    },
+    "hʲ": {
+      "classe": ["glotal", "fricativa", "surda", "palatalizada"],
+      "possibilidades": ["hʲ", "h", "ç", "j", "ɦʲ"],
+      "chances": [36, 26, 22, 12, 4]
+    },
+    "ɦʲ": {
+      "classe": ["glotal", "fricativa", "sonora", "palatalizada"],
+      "possibilidades": ["ɦʲ", "ɦ", "ʝ", "j"],
+      "chances": [34, 24, 22, 14]
+    },
+    "ʦʲ": {
+      "classe": ["alveolar", "africada", "surda", "palatalizada"],
+      "possibilidades": ["ʦʲ", "ʦ", "ʨ", "ɕ", "ʧ"],
+      "chances": [36, 24, 24, 12, 4]
+    },
+    "ʣʲ": {
+      "classe": ["alveolar", "africada", "sonora", "palatalizada"],
+      "possibilidades": ["ʣʲ", "ʣ", "ʥ", "ʑ", "ʤ"],
+      "chances": [36, 24, 24, 12, 4]
+    },
+    "ʧʲ": {
+      "classe": ["pos-alveolar", "africada", "surda", "palatalizada"],
+      "possibilidades": ["ʧʲ", "ʧ", "ʨ", "ɕ"],
+      "chances": [40, 28, 22, 10]
+    },
+    "ʤʲ": {
+      "classe": ["pos-alveolar", "africada", "sonora", "palatalizada"],
+      "possibilidades": ["ʤʲ", "ʤ", "ʥ", "ʑ"],
+      "chances": [40, 28, 22, 10]
+    },
+    "mʲ": {
+      "classe": ["bilabial", "nasal", "sonora", "palatalizada"],
+      "possibilidades": ["mʲ", "m", "nʲ", "ɲ"],
+      "chances": [44, 32, 14, 10]
+    },
+    "nʲ": {
+      "classe": ["alveolar", "nasal", "sonora", "palatalizada"],
+      "possibilidades": ["nʲ", "n", "ɲ", "j", "m"],
+      "chances": [38, 28, 22, 8, 4]
+    },
+    "ŋʲ": {
+      "classe": ["velar", "nasal", "sonora", "palatalizada"],
+      "possibilidades": ["ŋʲ", "ŋ", "nʲ", "ɲ"],
+      "chances": [42, 28, 18, 12]
+    },
+    "lʲ": {
+      "classe": [
+        "alveolar",
+        "lateral",
+        "aproximante",
+        "sonora",
+        "palatalizada"
+      ],
+      "possibilidades": ["lʲ", "l", "ʎ", "j", "ɲ"],
+      "chances": [38, 26, 22, 10, 4]
+    },
+    "ʎʲ": {
+      "classe": ["palatal", "lateral", "aproximante", "sonora", "palatalizada"],
+      "possibilidades": ["ʎʲ", "ʎ", "j", "lʲ"],
+      "chances": [42, 36, 14, 8]
+    },
+    "ɫʲ": {
+      "classe": ["alveolar", "lateral", "velarizado", "palatalizada"],
+      "possibilidades": ["ʎ", "lʲ", "j", "ɫ", "w", "l"],
+      "chances": [35, 25, 15, 15, 5, 5]
+    },
+    "ɺʲ": {
+      "classe": ["alveolar", "lateral", "tap", "sonora", "palatalizada"],
+      "possibilidades": ["ɺʲ", "ʎ", "ɾʲ", "ɺ", "j"],
+      "chances": [65, 80, 50, 40, 30]
+    },
+    "rʲ": {
+      "classe": ["alveolar", "trill", "sonora", "palatalizada"],
+      "possibilidades": ["rʲ", "r", "ɾʲ", "ʒ", "j"],
+      "chances": [38, 28, 18, 10, 6]
+    },
+    "ɾʲ": {
+      "classe": ["alveolar", "tap", "sonora", "palatalizada"],
+      "possibilidades": ["ɾʲ", "ɾ", "rʲ", "j", "ʒ"],
+      "chances": [40, 28, 16, 10, 6]
+    },
+    "ʀʲ": {
+      "classe": ["uvular", "trill", "sonora", "palatalizada"],
+      "possibilidades": ["ʀʲ", "ʁʲ", "j", "ʒ", "ʀ", "ʁ"],
+      "chances": [10, 35, 20, 15, 10, 10]
+    },
+    "wʲ": {
+      "classe": ["labiovelar", "aproximante", "sonora", "palatalizada"],
+      "possibilidades": ["wʲ", "w", "ɥ", "j", "v"],
+      "chances": [36, 28, 22, 10, 4]
+    },
+    "ʈʲ": {
+      "classe": ["retroflexa", "oclusiva", "surda", "palatalizada"],
+      "possibilidades": ["c", "ʨ", "tʃ", "ʈ", "tʲ"],
+      "chances": [60, 50, 40, 30, 20]
+    },
+    "ɖʲ": {
+      "classe": ["retroflexa", "oclusiva", "sonora", "palatalizada"],
+      "possibilidades": ["ɖ", "dʑ", "dʒ", "ɟ", "dʲ"],
+      "chances": [60, 50, 40, 30, 20]
+    },
+    "ʂʲ": {
+      "classe": ["retroflexa", "fricativa", "surda", "palatalizada"],
+      "possibilidades": ["ɕ", "ʃ", "ç", "ʂ", "sʲ"],
+      "chances": [60, 50, 40, 30, 20]
+    },
+    "ʐʲ": {
+      "classe": ["retroflexa", "fricativa", "sonora", "palatalizada"],
+      "possibilidades": ["ʑ", "ʒ", "ʝ", "ʐ", "zʲ"],
+      "chances": [60, 50, 40, 30, 20]
+    },
+    "ɹʲ": {
+      "classe": ["alveolar", "aproximante", "sonora", "palatalizada"],
+      "possibilidades": ["j", "ɾʲ", "ɹ", "ʒ", "ʎ"],
+      "chances": [60, 50, 40, 30, 20]
+    },
+    "ɻʲ": {
+      "classe": ["retroflexa", "aproximante", "sonora", "palatalizada"],
+      "possibilidades": ["j", "ɻ", "ɹʲ", "ʝ", "ʎ"],
+      "chances": [60, 50, 40, 30, 20]
+    },
+    "ʋʲ": {
+      "classe": ["labiodental", "aproximante", "sonora", "palatalizada"],
+      "possibilidades": ["vʲ", "ɥ", "j", "ʋ", "βʲ"],
+      "chances": [60, 50, 40, 30, 20]
+    },
+    "ʃʲ": {
+      "classe": ["pos-alveolar", "fricativa", "surda", "palatalizada"],
+      "possibilidades": ["ɕ", "ʃ", "ç", "sʲ", "j", "ʃʲ"],
+      "chances": [80, 60, 30, 16, 10, 4]
+    },
+    "ɳʲ": {
+      "classe": ["retroflexa", "nasal", "sonora", "palatalizada"],
+      "possibilidades": ["ɲ", "ɳ", "nʲ", "ɳʲ", "j̃"],
+      "chances": [60, 85, 70, 50, 30]
+    },
+    "ɽʲ": {
+      "classe": ["retroflexa", "tap", "sonora", "palatalizada"],
+      "possibilidades": ["ɽʲ", "ɾʲ", "ʐ", "j", "ɽ"],
+      "chances": [65, 80, 50, 30, 40]
+    },
+    "ɬʲ": {
+      "classe": ["alveolar", "lateral", "fricativa", "surda", "palatalizada"],
+      "possibilidades": ["ɬʲ", "ɬ", "ʃ", "ç", "lʲ"],
+      "chances": [38, 28, 20, 10, 4]
+    },
+    "ʒʲ": {
+      "classe": ["pos-alveolar", "fricativa", "sonora", "palatalizada"],
+      "possibilidades": ["ʒʲ", "ʑ", "ʒ", "j", "ʤʲ", "zʲ"],
+      "chances": [25, 35, 20, 10, 5, 5]
+    },
+    "ɫʷ": {
+      "classe": ["alveolar", "lateral", "velarizado", "sonora", "labializada"],
+      "possibilidades": ["ɫʷ", "ɫ", "w", "lʷ", "u"],
+      "chances": [34, 28, 24, 10, 4]
+    },
+    "ɬʷ": {
+      "classe": ["alveolar", "lateral", "fricativa", "surda", "labializada"],
+      "possibilidades": ["ɬʷ", "ɬ", "ʃʷ", "lʷ", "xʷ"],
+      "chances": [40, 30, 14, 10, 6]
+    },
+    "ɲʷ": {
+      "classe": ["palatal", "nasal", "sonora", "labializada"],
+      "possibilidades": ["ɲʷ", "ɲ", "nʷ", "ŋʷ", "w"],
+      "chances": [42, 28, 16, 10, 4]
+    },
+    "çʷ": {
+      "classe": ["palatal", "fricativa", "surda", "labializada"],
+      "possibilidades": ["çʷ", "ç", "xʷ", "ʃʷ", "f"],
+      "chances": [40, 26, 18, 12, 4]
+    },
+    "ʝʷ": {
+      "classe": ["palatal", "fricativa", "sonora", "labializada"],
+      "possibilidades": ["ʝʷ", "ʝ", "ɣʷ", "ʒʷ", "w", "v"],
+      "chances": [36, 24, 18, 12, 6, 4]
+    },
+    "jʷ": {
+      "classe": ["palatal", "aproximante", "sonora", "labializada"],
+      "possibilidades": ["jʷ", "j", "ɥ", "w", "ʝʷ"],
+      "chances": [36, 24, 24, 12, 4]
+    },
+    "ɥʷ": {
+      "classe": ["labial-palatal", "aproximante", "sonora", "labializada"],
+      "possibilidades": ["ɥʷ", "ɥ", "w", "jʷ", "y"],
+      "chances": [36, 34, 16, 10, 4]
+    },
+    "ɦʷ": {
+      "classe": ["glotal", "fricativa", "sonora", "labializada"],
+      "possibilidades": ["ɦʷ", "ɦ", "hʷ", "w", "ɣʷ"],
+      "chances": [32, 22, 18, 16, 8]
+    },
+    "ʨʷ": {
+      "classe": ["alveolo-palatal", "africada", "surda", "labializada"],
+      "possibilidades": ["ʨʷ", "ʨ", "ʧʷ", "ɕʷ", "kʷ"],
+      "chances": [42, 28, 16, 10, 4]
+    },
+    "ʥʷ": {
+      "classe": ["alveolo-palatal", "africada", "sonora", "labializada"],
+      "possibilidades": ["ʥʷ", "ʥ", "ʤʷ", "ʑʷ", "gʷ"],
+      "chances": [42, 28, 16, 10, 4]
+    },
+    "ɕʷ": {
+      "classe": ["alveolo-palatal", "fricativa", "surda", "labializada"],
+      "possibilidades": ["ɕʷ", "ɕ", "ʃʷ", "xʷ"],
+      "chances": [44, 30, 16, 10]
+    },
+    "ʑʷ": {
+      "classe": ["alveolo-palatal", "fricativa", "sonora", "labializada"],
+      "possibilidades": ["ʑʷ", "ʑ", "ʒʷ", "ɣʷ"],
+      "chances": [44, 30, 16, 10]
+    },
+    "ɺʷ": {
+      "classe": ["alveolar", "lateral", "tap", "sonora", "labializada"],
+      "possibilidades": ["ɺʷ", "ɺ", "ɾʷ", "w", "ɮʷ"],
+      "chances": [70, 60, 50, 30, 10]
+    }
+  },
+  "estrutura": ["VC", "CV", "CVC", "VCV", "VCVC", "CVCV"]
+}
