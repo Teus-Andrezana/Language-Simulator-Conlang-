@@ -171,11 +171,46 @@ class FamiliaLinguistica:
         Args:
             lingua (str): Nome da língua (chave) que esteja contida na classe.
         """
+        def gerar_onomatopeia(vogais:str, consoantes:str):
+            sequencia:str = choice(tools.regra_fonetica["estrutura"][2:])
+            onomatopeia:str = [choice(vogais if(s=="V") else consoantes) for s in sequencia]
+            chances:float = random()
+            if(chances<0.5):
+                onomatopeia.extend(onomatopeia)
+            else:
+                onomatopeia.extend([choice(vogais if(s=="V") else consoantes) for s in sequencia])
+            return "".join(onomatopeia)
+        
+        def inserir_tipos(tipo:str, quantidade:int)->dict[str,str]:
+            for _ in range(quantidade):
+                maximo = max(dicionario_base[lingua]['lingua'].keys())
+                dicionario_base[lingua]['lingua'][maximo+1] = {
+                        'palavra':gerar_onomatopeia(self.vogais_especificas, self.consoantes_especificas),
+                        'classe':"substantivo",
+                        'significado':[tipo],
+                        'generico': ["animal"],
+                        'indices': [],
+                        'uso':1.0,
+                }
+        
         def com_afixos(lingua, c2, palavra):
             c1 = (palavra+palavra) if(isinstance(palavra, str)) else lingua[palavra]['palavra']
             return c1 + c2 if(proto_posicao == 'posposicao') else c2 + c1
         def juntar_compostas(c1, c2, estrutura):
             return c1 + c2 if(estrutura) else c2 + c1
+
+        def aumentar_lexico(selecao:dict[str]|list[str])->None:
+            for index, raiz in enumerate(raizes.keys()):
+                maximo = max(dicionario_base[lingua]['lingua'].keys())
+                nova_palavra:list[str] = selecao[index][0]
+                dicionario_base[lingua]['lingua'][maximo+1] = {
+                    'palavra':nova_palavra,
+                    'classe':selecao[index][1],
+                    'significado':[raiz],
+                    'generico': [selecao[index][2]],
+                    'indices':[raizes[raiz]] if isinstance(raizes[raiz], int) else [],
+                    'uso':1.0,
+                }
 
         lingua_mae:dict[str, list[str]|str|list[int]] = self.proto_lingua['lingua']
         proto_gramatica = self.proto_lingua['gramatica']
@@ -224,18 +259,10 @@ class FamiliaLinguistica:
                 'substantivo', 'natureza'],
         }
         if(self.geracao < 1):
-            for index, raiz in enumerate(raizes.keys()):
-                maximo = max(dicionario_base[lingua]['lingua'].keys())
-                nova_palavra:list[str] = selecao[index][0]
-                # nova_palavra = tools.iterar_efeitos(nova_palavra, [tools.harmonia_vocal])
-                dicionario_base[lingua]['lingua'][maximo+1] = {
-                    'palavra':nova_palavra,
-                    'classe':selecao[index][1],
-                    'significado':[raiz],
-                    'generico': [selecao[index][2]],
-                    'indices':[raizes[raiz]] if isinstance(raizes[raiz], int) else [],
-                    'uso':1.0,
-                }
+            tipos = ["tipo-animal", "tipo-ave", "tipo-reptil"]
+            for tipo in tipos:
+                inserir_tipos(tipo, 10)
+            aumentar_lexico(selecao = selecao)
 
         return dicionario_base
 
