@@ -186,9 +186,18 @@ def corrigir_palavra(palavra:list[str])->list[str]:
     """
     index:int = 0
     while(index<len(palavra)):
-        if(palavra[index]=='ː'):
+        if(palavra[index] == 'ː'):
             palavra.pop(index)
             palavra[index-1] = f'{palavra[index-1]}ː'
+        elif(palavra[index] == 'ʰ'):
+            palavra.pop(index)
+            palavra[index-1] = f'{palavra[index-1]}ʰ'
+        elif(palavra[index] == 'ʲ'):
+            palavra.pop(index)
+            palavra[index-1] = f'{palavra[index-1]}ʲ'
+        elif(palavra[index] == 'ʷ'):
+            palavra.pop(index)
+            palavra[index-1] = f'{palavra[index-1]}ʷ'
         index+=1
     return palavra
 

@@ -1871,8 +1871,10 @@ class FamiliaLinguistica:
         """
         Junta o verbo com a pessoa verbal
         """
-        conjugacao = self.dialetos_criados[lingua]['gramatica']['conjugacao']
-        regra:str = conjugacao['regra']
+        gramatica = self.dialetos_criados[lingua]['gramatica']
+        conjugacao = gramatica['pronomes']
+        regra = gramatica['posicao']
+        # regra:str = conjugacao['regra']
         if(regra=='preposicao'):
             return conjugacao[pessoa] + verbo
         elif(regra=='posposicao'):
@@ -2021,7 +2023,7 @@ class FamiliaLinguistica:
         Palavras usadas: [['ɾ', 'a', 'j', 'ɾ'], ['m', 'u', 'ɾ', 'ɪ', 'm', 'w', 'ʊ'], ['i', 'ɪ', 'w']]
         """
 
-        def retornar_caso(self, regra, lingua, palavra, caso)->list[str]:
+        def retornar_caso(regra, lingua, palavra, caso)->list[str]:
             """
             """
             if(len(self.dialetos_criados[lingua]["gramatica"]["afixos"][caso])>0):
@@ -2033,14 +2035,14 @@ class FamiliaLinguistica:
         num_objeto = self.sortear_indice(lingua, "substantivo")
         num_verbo = self.sortear_indice(lingua, "verbo")
         descritivo = self.dialetos_criados[lingua]
-        ordem:str = descritivo['gramatica']['estrutura']
+        gramatica:dict[str,dict[str,str]] = descritivo["gramatica"]
+        ordem:str = gramatica['estrutura']
         frase_organizada:list[int] = self.organizar_frase(ordem, lingua, [num_substantivo, num_objeto, num_verbo])
         print(frase_organizada)
 
         dicionario = descritivo['lingua']
         print(f"Tradução: {dicionario[frase_organizada[0]]["significado"]} {dicionario[frase_organizada[1]]["significado"]}", end=" ")
         print(f"{dicionario[frase_organizada[2]]["significado"]}")
-        gramatica:dict[str,dict[str,str]] = descritivo["gramatica"]
         frase_base:list[str] = [
             dicionario[frase_organizada[0]]["palavra"],
             dicionario[frase_organizada[1]]["palavra"],
@@ -2054,23 +2056,28 @@ class FamiliaLinguistica:
                 # frase = []
                 # afixos_lista = list(afixos.keys())
                 if(all(i in ['nominativo', 'absolutivo'] for i in afixos.keys())):
-                    frase_base[ordem.index("S")] = retornar_caso(afixos["regra"], lingua, frase_base[ordem.index("S")], choice(["nominativo", "absolutivo"]))
+                    # tenho que mudar depois, dar uma regra a afixos
+                    frase_base[ordem.index("S")] = retornar_caso(gramatica["posicao"], lingua, frase_base[ordem.index("S")], choice(["nominativo", "absolutivo"]))
                 else:
-                    frase_base[ordem.index("S")] = retornar_caso(afixos["regra"], lingua, frase_base[ordem.index("S")], "nominativo")
+                    frase_base[ordem.index("S")] = frase_base[ordem.index("S")]
                 if(all(i in ['acusativo', 'dativo'] for i in afixos.keys())):
-                    frase_base[ordem.index("O")] = retornar_caso(afixos["regra"], lingua, frase_base[ordem.index("O")], choice(["acusativo", "dativo"]))
+                    frase_base[ordem.index("O")] = retornar_caso(gramatica["posicao"], lingua, frase_base[ordem.index("O")], choice(["acusativo", "dativo"]))
                 elif('acusativo' in afixos.keys()):
-                    frase_base[ordem.index("O")] = retornar_caso(afixos["regra"], lingua, frase_base[ordem.index("O")], "acusativo")
+                    frase_base[ordem.index("O")] = retornar_caso(gramatica["posicao"], lingua, frase_base[ordem.index("O")], "acusativo")
                 else:
-                    frase_base[ordem.index("O")] = retornar_caso(afixos["regra"], lingua, frase_base[ordem.index("O")], "dativo")
+                    frase_base[ordem.index("O")] = retornar_caso(gramatica["posicao"], lingua, frase_base[ordem.index("O")], "dativo")
 
             if(isinstance(pronomes, dict) and mostrar_conjugacao):
-                frase_base[ordem.index("V")] = self.conjugar_pessoa(lingua, 'aquele', frase_base[ordem.index("V")])
+                prnms = list(gramatica["pronomes"].keys())
+                shuffle(prnms)
+                pronome = choice([p for p in prnms if 'aquele' in p])
+                frase_base[ordem.index("V")] = self.conjugar_pessoa(lingua, pronome, frase_base[ordem.index("V")])
 
         silaba_tonica = gramatica['silaba_tonica']
         for i in range(len(frase_base)):
             frase_base[i] = tools.retornar_palavra_atona(frase_base[i], silaba_tonica)
-        descricao = tools.filtro_fonetico(frase_base[0]+frase_base[1]+frase_base[2])
+        # descricao = tools.filtro_fonetico(frase_base[0]+frase_base[1]+frase_base[2])
+        descricao = tools.sandhi(frase_base[0]+frase_base[1]+frase_base[2])
         print("/"+"".join(descricao)+"/")
 
 
