@@ -9,6 +9,11 @@ file.close()
 global_consonants_str:str = "".join(list(regra_fonetica['consoante'].keys()))
 global_vowels_str:str = "".join(list(regra_fonetica['vogal'].keys()))
 
+
+def regex_char_class(chars:str)->str:
+    """Build a safe regex character class from arbitrary character strings."""
+    return f"[{re.escape(chars)}]"
+
 """
 CHECAGEM/VERIFICAR
 """
@@ -949,7 +954,7 @@ def mudancas_w_j(word:list[str], acervo:list[str])->list[str]:
     ['p','a','ʝ','o']
     """
     def verificar_e_atualizar(word:str, som:str, mudado:str)->str:
-        new_word = re.sub(rf'{som}(?=[{global_vowels_str}])', rf"{mudado}", word)
+        new_word = re.sub(rf'{re.escape(som)}(?={regex_char_class(global_vowels_str)})', rf"{mudado}", word)
         return new_word
     try:
         if('j' in word):
@@ -997,7 +1002,7 @@ def epenthesis(config:float, word:str)->str:
     """
     if(random()<config):
         help_vowel = choice(['ɪ','ɐ','ʊ','ə']) #pode ser melhor usar as vogais próximas na própria palavra em vez de um som aleatório
-        word = re.sub(rf"([{global_consonants_str}])(?=[{global_consonants_str}])", rf'\g<1>{help_vowel}', word)
+        word = re.sub(rf"({regex_char_class(global_consonants_str)})(?={regex_char_class(global_consonants_str)})", rf'\g<1>{help_vowel}', word)
     return word
 
 def assimilar(config:float, word:str)->str:
@@ -1019,9 +1024,9 @@ def assimilar(config:float, word:str)->str:
         bilabial_oclusiva = "".join(verificar_classes_regra_fonetica(["bilabial", "oclusiva"], "consoante", 1)[0])
         alveolar_oclusiva = "".join(verificar_classes_regra_fonetica(["alveolar", "oclusiva"], "consoante", 1)[0])
         lista_efeitos = [
-            (rf"n(?=[{bilabial_oclusiva}])", "m"), (rf"m(?=[{alveolar_oclusiva}])", "n"), 
-            (rf"([{surda}])(?=[{sonora}])", lambda match:retornar_aproximante(match.group(1), "sonora", 2)),
-            (rf"([{sonora}])(?=[{surda}])", lambda match:retornar_aproximante(match.group(1), "surda", 2)),
+            (rf"n(?={regex_char_class(bilabial_oclusiva)})", "m"), (rf"m(?={regex_char_class(alveolar_oclusiva)})", "n"), 
+            (rf"({regex_char_class(surda)})(?={regex_char_class(sonora)})", lambda match:retornar_aproximante(match.group(1), "sonora", 2)),
+            (rf"({regex_char_class(sonora)})(?={regex_char_class(surda)})", lambda match:retornar_aproximante(match.group(1), "surda", 2)),
             (r"eo", "oː"), (r"oe", "eː")
         ]
         for e in lista_efeitos:
@@ -1045,7 +1050,7 @@ def ajuste_diacritico(word:str, vowels:str)->str: # MANUTENCAO *
         padrao:str = retornar_padroes(v)
         print(v, padrao)
         # word = re.sub(rf"{v}ː(?=[{v}])", rf"{padrao}", word)
-        word = re.sub(rf"{v}(?=[{v}])", rf"{padrao}", word)
+        word = re.sub(rf"{re.escape(v)}(?={regex_char_class(v)})", rf"{padrao}", word)
     return word
 
 def devoicing(word:str)->str:
@@ -1061,7 +1066,7 @@ def devoicing(word:str)->str:
     >>> devoicing(word = "kaz")
     "kas"
     """
-    return re.sub(rf"([{global_consonants_str}])$", lambda l:retornar_aproximante(l.group(1), 'surda', 2), word)
+    return re.sub(rf"({regex_char_class(global_consonants_str)})$", lambda l:retornar_aproximante(l.group(1), 'surda', 2), word)
 
 def iter_regex(effect_list:list, word:str)->str:
     """
@@ -1108,21 +1113,21 @@ def filtro_fonetico(word:str)->str:
     """
     def choose(lista):
         return choice(lista)
-    consonants = re.escape(global_consonants_str)
-    vowels = re.escape(global_vowels_str)
+    consonants = regex_char_class(global_consonants_str)
+    vowels = regex_char_class(global_vowels_str)
     non_aspirated = [c for c in global_consonants_str if 'aspirada' not in verificar_classe(c)]
     effect_list = [
-        (rf'([{non_aspirated}])h', r'\g<1>ʰ'), (r'mβ', 'mb'),
-        (rf'(?=[{consonants}])wj(?=[{consonants}])', choose(['wɪ', 'ʊj'])),
-        (rf'(?=[{consonants}])jw(?=[{consonants}])', choose(['jʊ', 'ɪw'])),
-        (rf'(?=[{consonants}])j$', 'ɪ'), (rf'(?=[{consonants}])w$', 'ʊ'),
-        (rf'nl(?=[{consonants}])|(?<=[{consonants}])nl', choose(['n', 'l'])),
-        (rf'(?<=[{consonants}])wː(?=[{consonants}])', 'ʊː'), (rf'(?<=[{consonants}])w(?=[{consonants}])', 'ʊ'),
-        (rf'(?<=[{consonants}])j(?=[{consonants}])', 'ɪ'), (rf'(?<=[{consonants}])jː(?=[{consonants}])', 'ɪː'),
-        (rf'(?<=[{vowels}])ɪ|ɪ(?=[{vowels}])', 'j'), (rf'(?<=[{vowels}])ʊ|ʊ(?=[{vowels}])', 'w'),
-        (rf'([{vowels}])ww', choose(['wʊ', 'w'])),(rf'ww(?=[{vowels}])', choose(['ʊw', 'w'])),
-        (rf'([{vowels}])ww', choose(['jɪ', 'j', 'ɪː'])),(rf'ww(?=[{vowels}])', choose(['ɪj', 'j', 'ɪː'])),
-        (rf'ʝ$|(?<=[{consonants}])ʝ|ʝ(?=[{consonants}])', 'j'),
+        (rf'({regex_char_class("".join(non_aspirated))})h', r'\g<1>ʰ'), (r'mβ', 'mb'),
+        (rf'(?={consonants})wj(?={consonants})', choose(['wɪ', 'ʊj'])),
+        (rf'(?={consonants})jw(?={consonants})', choose(['jʊ', 'ɪw'])),
+        (rf'(?={consonants})j$', 'ɪ'), (rf'(?={consonants})w$', 'ʊ'),
+        (rf'nl(?={consonants})|(?<={consonants})nl', choose(['n', 'l'])),
+        (rf'(?<={consonants})wː(?={consonants})', 'ʊː'), (rf'(?<={consonants})w(?={consonants})', 'ʊ'),
+        (rf'(?<={consonants})j(?={consonants})', 'ɪ'), (rf'(?<={consonants})jː(?={consonants})', 'ɪː'),
+        (rf'(?<={vowels})ɪ|ɪ(?={vowels})', 'j'), (rf'(?<={vowels})ʊ|ʊ(?={vowels})', 'w'),
+        (rf'({vowels})ww', choose(['wʊ', 'w'])),(rf'ww(?={vowels})', choose(['ʊw', 'w'])),
+        (rf'({vowels})ww', choose(['jɪ', 'j', 'ɪː'])),(rf'ww(?={vowels})', choose(['ɪj', 'j', 'ɪː'])),
+        (rf'ʝ$|(?<={consonants})ʝ|ʝ(?={consonants})', 'j'),
     ]
     word = iter_regex(effect_list, word)
     # for f in effect_list:
