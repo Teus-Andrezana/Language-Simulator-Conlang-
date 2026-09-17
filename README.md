@@ -34,7 +34,7 @@ In other words, it works like a computational linguistics lab: from a set of sou
 - [conlang.ipynb](conlang.ipynb): interactive notebook for experiments, testing, and visual exploration of the generator.
 - [biblioteca/fonetica.json](biblioteca/fonetica.json): phonetic rules and sound classification database.
 - [biblioteca/significados.json](biblioteca/significados.json): dictionary of meanings and concepts used as the basis for lexical generation.
-- [readMe](readMe): project documentation.
+- [padrao.dm](padrao.dm): contains padronizations varibles' names (in process).
 
 ## How it works
 
