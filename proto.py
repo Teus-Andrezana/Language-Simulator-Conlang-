@@ -145,15 +145,26 @@ class ProtoLingua:
         >>>class._criar_consoantes()
         ['p', 't', 'k', 'w', 'j','s','r','m','n','g']
         """
+        def iterar(sons_implementar:list[str])->list[str]:
+            lista_sons:list[str] = []
+            index:int = 0
+            while(index< randint(1, len(sons_implementar)-1)):
+                lista_sons.append(sons_implementar.pop(randint(0, len(sons_implementar)-1)))
+                index+=1
+            return lista_sons
+
         consoantes_listadas:list[str]=['p', 't', 'k', 'w', 'j', 'm', 'n', 's', 'ɾ']
         # incomuns = ['ʔ', 'r', 'x', 'q', 'ŋ', 'ɲ', 'z', 'ʃ', 'ʒ', 'ɢ', 'ɣ']
         # raras = ['ʈ', 'ɖ', 'ɽ', 'ʂ', 'ʐ', 'ɳ', 'χ', 'ʁ', 'ʀ', 'ɬ', 'ɮ', 'ɸ', 'β', 'ɹ', 'ɻ', 'ʋ', 'ɺ']
-        if(random()>0.6):
-            comuns = ['h', 'b', 'd', 'g', 'l']
-            index:int = 0
-            while(index< randint(1, len(comuns)-1)):
-                consoantes_listadas.extend(comuns.pop(randint(0, len(comuns)-1)))
-                index+=1
+        if(random()>=0.3):
+            comuns = ['h', 'b', 'd', 'g', 'l', 'ŋ']
+            consoantes_listadas.extend(iterar(comuns))
+        if(random()>0.7):
+            aspiradas:list[str] = ['pʰ', 'tʰ', 'kʰ']
+            consoantes_listadas.extend(aspiradas)
+        if(random()>=0.6):
+            glotais:list[str] = ['ʔ', 'q', 'ɢ', 'ɣ']
+            consoantes_listadas.extend(iterar(glotais))
         return consoantes_listadas
 
     def conta_vogal_consoante(self, estrutura:list[str], tipo:str)->int:
@@ -413,7 +424,7 @@ class ProtoLingua:
         """
         # tentei pegar todas as raizes primordiais de cada familia linguistica que conheco,
         # tambem to seguir a "lista de swidesh"
-        with open("biblioteca/significados.json", "r", encoding="utf-8") as arquivo:
+        with open("libraries/significados.json", "r", encoding="utf-8") as arquivo:
             significados:dict[str, str] = load(arquivo)
         arquivo.close()
 

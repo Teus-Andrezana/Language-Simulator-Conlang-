@@ -60,12 +60,12 @@ class FamiliaLinguistica:
             dialetos_desenvolvidos[lingua]['gramatica']['afixos'] = {}
             afixos:dict = dialetos_desenvolvidos[lingua]['gramatica']['afixos']
             proto_mae = proto_lingua['lingua']
-            afixos['cargo'] = proto_mae[self.retornar_indice('original', choice(["homem", "pessoa", "coisa", "semelhante"]))]['palavra']
-            afixos['locativo'] = proto_mae[self.retornar_indice('original', choice(["local", "chao", "terra", "centro", "intestino", "barriga"]))]['palavra']
-            afixos['dativo'] = proto_mae[self.retornar_indice('original', choice(["fazer", "dar"]))]['palavra']
-            afixos['acusativo'] = proto_mae[self.retornar_indice('original', choice(["outro", "junto", "partir"]))]['palavra']
-            afixos['instrumental'] = proto_mae[self.retornar_indice('original', choice(["mao", "usar"]))]['palavra']
-            afixos['genitivo'] = proto_mae[self.retornar_indice('original', choice(["relativo", "vir", "vincular"]))]['palavra']
+            afixos['cargo'] = proto_mae[self.retornar_indice('original', choice(["homem", "pessoa", "fazer"]))]['palavra']
+            afixos['locativo'] = proto_mae[self.retornar_indice('original', choice(["local", "terra", "centro", "intestino", "barriga"]))]['palavra']
+            afixos['dativo'] = proto_mae[self.retornar_indice('original', choice(["dar", "compartilhar", "dividir"]))]['palavra']
+            afixos['acusativo'] = proto_mae[self.retornar_indice('original', choice(["outro", "partir"]))]['palavra']
+            afixos['instrumental'] = proto_mae[self.retornar_indice('original', choice(["mao", "usar", "pegar", "levar"]))]['palavra']
+            afixos['genitivo'] = proto_mae[self.retornar_indice('original', choice(["vir", "vincular", "sair", "porcao", "junto", "pedaco"]))]['palavra']
 
         dialetos_desenvolvidos:dict={}
         idioma_original = "original"
@@ -193,9 +193,6 @@ class FamiliaLinguistica:
                         'uso':1.0,
                 }
         
-        def com_afixos(lingua, c2, palavra):
-            c1 = (palavra+palavra) if(isinstance(palavra, str)) else lingua[palavra]['palavra']
-            return c1 + c2 if(proto_posicao == 'posposicao') else c2 + c1
         def juntar_compostas(c1, c2, estrutura):
             return c1 + c2 if(estrutura) else c2 + c1
 
@@ -217,10 +214,16 @@ class FamiliaLinguistica:
         proto_posicao = proto_gramatica['posicao']
         estrutura = proto_gramatica['estrutura'] in ['SOV', 'OSV']
         afixos:dict[str,list[str]] = dicionario_base[lingua]['gramatica']['afixos']
+        pai = choice(['da', 'ta', 'pa', 'ba', 'ka'])
+        mae = choice(['ha', 'na', 'ma'])
         raizes = {
-            'pai': self.retornar_indice('original', choice(["sol", "proteger", "cobrir"])) if random() > 0.5 else choice(['da','ta','pa']),
-            'mae': choice(['ma', 'na', 'ha']),
-            'filho': self.retornar_indice('original', choice(["pedaco", "proteger", "semente", "gerar"])),
+            'pai': (self.retornar_indice('original', choice(["sol", "proteger", "cobrir"])), self.retornar_indice('original', 'grande'))
+                if random() > 0.5 else "".join([pai, pai]),
+            'mae': "".join([mae, mae]),
+            'filho': (
+                self.retornar_indice('original', choice(["pedaco", "proteger", "semente", "gerar"])), 
+                self.retornar_indice('original', 'pequeno')
+            ),
             'crianca': (self.retornar_indice('original', 'homem'), self.retornar_indice('original', 'pequeno')),
             'cabeca': choice([
                 (self.retornar_indice('original', 'membro'), self.retornar_indice('original', 'alto')),
@@ -241,11 +244,10 @@ class FamiliaLinguistica:
             ])
         }
         selecao = {
-            0:[com_afixos(lingua_mae, afixos['cargo'], raizes['pai']),
-                'substantivo', 'familia'],
-            1:[com_afixos(lingua_mae, afixos['cargo'], raizes['mae']),
-                'substantivo', 'familia'],
-            2:[com_afixos(lingua_mae, afixos['genitivo'], raizes['filho']),
+            0:[juntar_compostas(lingua_mae[raizes['pai'][1]]['palavra'], lingua_mae[raizes['pai'][0]]['palavra'], estrutura)
+                if(isinstance(raizes['pai'][0], int)) else raizes['pai'], 'substantivo', 'familia'],
+            1:[raizes['mae'], 'substantivo', 'familia'],
+            2:[juntar_compostas(lingua_mae[raizes['filho'][0]]['palavra'], lingua_mae[raizes['filho'][1]]['palavra'], estrutura),
                 'substantivo', 'familia'],
             3:[juntar_compostas(lingua_mae[raizes['crianca'][0]]['palavra'], lingua_mae[raizes['crianca'][1]]['palavra'], estrutura),
                 'substantivo', 'social'],
@@ -296,25 +298,34 @@ class FamiliaLinguistica:
         dialetos_gerais = self.dialetos_criados
         dialetos = dialetos_gerais[nome[1]]
         dicionario = dialetos['lingua']
-        dialetos['gramatica']['pronomes'] = {}
-        pronomes = dialetos['gramatica']['pronomes']
+        gramatica = dialetos['gramatica']
+        gramatica['pronomes'] = {}
+        pronomes = gramatica['pronomes']
+        afixos = gramatica['afixos']
+        posicao = gramatica['posicao'] == 'posposicao'
         ordem = random()
         genero = False
         termos_gerais = self.retornar_palavras_do_ramo(nome[1])
 
         pronomes['eu'] = (
-            dicionario[self.retornar_indice(nome[1], choice(['homem', 'coisa', 'cabeca']))]['palavra']
+            dicionario[self.retornar_indice(nome[1], choice(['pessoa', 'cabeca', 'falar']))]['palavra']
             if('cabeca' in termos_gerais)
-            else dicionario[self.retornar_indice(nome[1], choice(['homem', 'coisa']))]['palavra']
+            else dicionario[self.retornar_indice(nome[1], choice(['pessoa', 'falar']))]['palavra']
         )
 
-        pronomes['voce'] = dicionario[self.retornar_indice(nome[1], choice(['pessoa', 'local']))]['palavra']
+        pronomes['voce'] = dicionario[self.retornar_indice(nome[1], choice(['semelhante', 'ouvir']))]['palavra']
+        termo_aquele:list[str] = choice(['relativo', 'outro', 'ver'])
         if(random()>0.5):
-            pronomes['aquele'] = dicionario[self.retornar_indice(nome[1], choice(['relativo', 'outro']))]['palavra']
+            pronomes['aquele'] = dicionario[self.retornar_indice(nome[1], termo_aquele)]['palavra']
+            if(termo_aquele == 'ver'):
+                pronomes['aquele'] = pronomes['aquele']+afixos['acusativo'] if(posicao == 'posposicao') else afixos['acusativo']+pronomes['aquele']
         else:
             genero = True
-            termo = choice(['relativo', 'outro'])
-            pronomes['aquele_h'], pronomes['aquele_m'] = gerar_aquele_genero(dicionario, nome[1], termo)
+            pronomes['aquele_h'], pronomes['aquele_m'] = gerar_aquele_genero(dicionario, nome[1], termo_aquele)
+            if(termo_aquele == 'ver'):
+                pronomes['aquele_h'] = pronomes['aquele_h']+afixos['acusativo'] if(posicao == 'posposicao') else afixos['acusativo']+pronomes['aquele_h']
+                pronomes['aquele_m'] = pronomes['aquele_m']+afixos['acusativo'] if(posicao == 'posposicao') else afixos['acusativo']+pronomes['aquele_m']
+            
         if(random()>0.5):
             if(genero):
                 if(random()>0.5):
@@ -348,6 +359,13 @@ class FamiliaLinguistica:
                 pronomes[choice(['voces', 'dual'])] = (
                     pronomes['aquele'] + pronomes['voce'] if ordem>0.5 else pronomes['voce'] + pronomes['aquele']
                 )
+        # preciso colocar as versoes masculinas e femininas? (talvez tivesse que fazer uma versao animada e inanimada?)
+        pronomes['esse'] = (
+            dicionario[self.retornar_indice(nome[1], choice(['pegar', 'mostrar', 'usar', 'levar', 'carregar']))]['palavra']+afixos['instrumental']
+            if(posicao) 
+            else 
+            afixos['instrumental'] + dicionario[self.retornar_indice(nome[1], choice(['pegar', 'mostrar', 'usar', 'levar', 'carregar']))]['palavra']
+        )
 
     def nomes(self):
         return list(self.dialetos_criados.keys())
@@ -948,99 +966,6 @@ class FamiliaLinguistica:
                                 j+=1
                             i+=1
 
-    def _adaptar_gramatica_(self, lingua_alvo:dict): # <============
-        """
-        FUNCAO
-        INPUTS
-        RETORNO
-
-        EXEMPLO
-        >>>
-        """
-        conjunto:list = list(self.dialetos_criados[lingua_alvo]["gramatica"].keys())
-        vogais:list[str] = list(self.dialetos_criados[lingua_alvo]['sons']['vogais'])
-        consoantes:list[str] = list(self.dialetos_criados[lingua_alvo]['sons']['consoantes'])
-        for materia in conjunto:
-            gramatica:dict = self.dialetos_criados[lingua_alvo]["gramatica"][materia]
-            if(isinstance(gramatica, dict)):
-                silaba_tonica:str = self.dialetos_criados[lingua_alvo]['gramatica']['silaba_tonica']
-                for assunto in gramatica:
-                    index:int = 0
-                    if(assunto != "regra"):
-                        palavra:str = gramatica.get(assunto) # <============== parei aqui
-                        palavra:list[str] = tools.corrigir_palavra(list(palavra))
-                        # print(palavra)
-                        for letra, som_antigo in enumerate(palavra):
-                            if(tools.eh_vogal(som_antigo)):
-                                som_max_vogal:float=0.0
-                                sons_parecidos_sorteados:list[str] = []
-                                chances:list[float] = []
-                                som_novo:str=""
-                                for som_novo in vogais: ## ele vê letra por letra da palavra
-                                    if(som_novo!=som_antigo):
-                                        semelhanca_vogais:float = tools.semelhanca_entre_sons(som_antigo, som_novo)
-                                        if(semelhanca_vogais>=som_max_vogal): # use o som_max_vogal para substituir o valor
-                                            som_max_vogal = semelhanca_vogais
-                                            sons_parecidos_sorteados.append(som_novo)
-                                            chances.append(1/2 if(len(sons_parecidos_sorteados)==1) else chances[-1]/2)
-                                        index+=1
-                                # checa no mesmo loop cada som que tem no acervo e então muda para o novo som
-                                sons_parecidos_sorteados.insert(0, som_antigo)
-                                chances.insert(0, 1.0)
-                                palavra[letra] = choices(population = sons_parecidos_sorteados, weights = chances)[0]
-
-                            elif(tools.eh_consoante(som_antigo)):
-                                if(len(som_antigo)>0):
-                                    if(som_antigo not in self.consoantes_gerais):
-                                        if(random()>0.4):
-                                            som_max_consoante:float = 0.0
-                                            som_novo:str = ""
-                                            consoantes_sorteadas:list = []
-                                            for som_novo in consoantes:
-                                                semelhanca_consoantes:float = tools.semelhanca_entre_sons(som_antigo, som_novo)
-                                                if(semelhanca_consoantes>=som_max_consoante): # use o som_max_consoante para substituir o valor
-                                                    if(semelhanca_consoantes>som_max_consoante):
-                                                        som_max_consoante = semelhanca_consoantes
-                                                        consoantes_sorteadas = []
-                                                        consoantes_sorteadas.append(som_novo)
-                                                    else:
-                                                        consoantes_sorteadas.append(som_novo)
-                                                index+=1
-                                            palavra[letra] = choice(consoantes_sorteadas)
-
-                                        else:
-                                            if(len(som_antigo)>1):
-                                                som_novo = som_antigo[0]
-                                                possibilidades:list = tools.regra_fonetica['consoante'][som_antigo]['possibilidades']
-                                                chances:list = tools.regra_fonetica['consoante'][som_antigo]['chances']
-                                                som_escolhido = "".join(choices(population=possibilidades, weights=chances, k=1))
-                                                palavra[letra] = f"{som_escolhido}{som_antigo[1]}"
-                                            else:
-                                                possibilidades:list = tools.regra_fonetica['consoante'][som_antigo]['possibilidades']
-                                                chances:list = tools.regra_fonetica['consoante'][som_antigo]['chances']
-                                                palavra[letra] = "".join(choices(population=possibilidades, weights=chances, k=1))
-                                            continue
-                                    else:
-                                        som_max_consoante:float=0.0
-                                        som_novo:str = ""
-                                        consoantes_sorteadas:list = []
-                                        for som_novo in consoantes:
-                                            semelhanca_consoantes:float = tools.semelhanca_entre_sons(som_antigo, som_novo)
-                                            if(semelhanca_consoantes>=som_max_consoante): # use o som_max_consoante para substituir o valor
-                                                if(semelhanca_consoantes>som_max_consoante):
-                                                    som_max_consoante = semelhanca_consoantes
-                                                    consoantes_sorteadas.clear()
-                                                    consoantes_sorteadas.append(som_novo)
-                                                else:
-                                                    consoantes_sorteadas.append(som_novo)
-                                            index+=1
-                                            palavra[letra] = choice(consoantes_sorteadas)
-                        palavra = tools.retornar_palavra_atona(
-                            "".join(palavra),
-                            silaba_tonica
-                        )
-                        self.dialetos_criados[lingua_alvo]["gramatica"][materia][assunto] = palavra
-
     def _perder_significado_(self):
         """
         FUNCAO
@@ -1079,14 +1004,14 @@ class FamiliaLinguistica:
         Considerando a ideia que palavras cotidianas que estão se gramaticalizando
             sofrem muito mais erosão que as demais palavras.
         """
-        def por_efeito(lingua:str, palavra:str, silaba_tonica)->list[str]:
-            vogais:list[str] = "".join(list(tools.regra_fonetica['vogal'].keys()))
+        def por_efeito(lingua:str, palavra:str, silaba_tonica)->str:
+            vogais:str = "".join(list(tools.regra_fonetica['vogal'].keys()))
             lista_efeitos = [
                 (r'p$', 'b'), (r'k$', 'g'), (r't$', 'd'), (r'[hmn]$', ''),
-                (r's$', 'z'), (rf'[bdg]$|(?=[{vogais}])[bdg]|[bdg](?<=[{vogais}])', ''),
+                (r's$', 'z'), (rf'[bdg]$|(?<=[{vogais}])[bdg]|[bdg](?=[{vogais}])', ''),
                 (r'[aäʌɑæ]', 'ɐ'), (r'[ie]', 'ɪ'), (r'[ɐɪʊə]$', ''),
                 (r'[u]', 'ʊ'), (r'[øɶ]', 'œ'), (r'[ø]', 'ə'), (r'[y]', 'ʏ'),
-                (r'[ɞ]', 'ɵ'), (r'[ɤ]', 'ʌ'),
+                (r'[ɞ]', 'ɵ'), (r'[ɤ]', 'ʌ'), (rf'(?<=[{vogais}])ː', '')
             ]
             efeito = choice(lista_efeitos)
             palavra = "".join(palavra)

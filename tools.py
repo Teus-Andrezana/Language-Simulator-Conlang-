@@ -2,7 +2,7 @@ from random import randint, choice, choices, random, uniform, shuffle
 import re
 import json
 
-with open(file='biblioteca/fonetica.json', mode='r', encoding='utf-8') as file:
+with open(file='libraries/fonetica.json', mode='r', encoding='utf-8') as file:
     regra_fonetica = json.load(file)
 file.close()
 
@@ -1096,14 +1096,20 @@ def sandhi(word:str)->str:
     """
     def choose(lista:list[str])->str:
         return choice(lista)
+
+    consonants = regex_char_class(global_consonants_str)
+    vowels = regex_char_class(global_vowels_str)
     lista_efeitos = [
         (r'dg|gg',choose(['g', 'gː'])), (r'bp|pp', choose(['p','pː'])), (r'dt|tt', choose(['t','tː'])),
-        (r'pb|bb', choose(['b','bː'])), (r'dd', choose(['d','dː'])), (r'kk', 'kː'), (r'ts', 'ʦ'),
-        (r'dz', 'ʣ'), (r'bm', choose(['mb', 'b', 'm', 'mː'])), (r'pm', choose(['mp', 'm', 'p', 'mː'])),
+        (r'pb|bb', choose(['b','bː'])), (r'dd', choose(['d','dː'])), (r'kk', 'kː'),
+        (r'ts', 'ʦ'), (r'dz', 'ʣ'), (r'dʒ', 'ʤ'), (r'tʃ', 'ʧ'), (r'tɕ', 'ʨ'), (r'dʑ', 'ʥ'), (r'tʂ', 'ꭧ'),
+        (r'bm', choose(['mb', 'b', 'm', 'mː'])), (r'pm', choose(['mp', 'm', 'p', 'mː'])),
         (r'nŋ|ŋn', 'ŋ'), (r'n(?=[rɾ])', 'nd'), (r'm(?=[rɾ])', 'mb'), (r'ɾɾ|ɾː|rː', 'r'), (r'mm', 'mː'),
         (r'nn', 'nː'), (r'a[aɐə]|[aɐə]a', choose(['a', 'aː'])), (r'iɪ|ɪi', choose(['ɪ', 'ɪː', 'ij'])),
         (r'[eə]e|e[eə]', 'eː'), (r'uu', choose(['uː', choose(['wu','uw'])])), (r'oo', 'oː'), 
         (r'([ɐə])[ɐə]|[ɐə]([ɐə])', r'\g<1>ː'), (r'ɐe|aɪ', choose(['e', 'ɛ'])),
+        (rf'sʊ(?=[{consonants}])', lambda _:choices(population = ["s", "sʊ"], weights = [0.3, 0.7])[0]), #tlvz add em sincope
+        (rf'jɪ(?=[{vowels}])', 'ɪj')
     ]
     word = iter_regex(lista_efeitos, word)
     return word
@@ -1126,7 +1132,7 @@ def filtro_fonetico(word:str)->str:
     vowels = regex_char_class(global_vowels_str)
     non_aspirated = [c for c in global_consonants_str if 'aspirada' not in verificar_classe(c)]
     effect_list = [
-        (rf'({regex_char_class("".join(non_aspirated))})h', r'\g<1>ʰ'), (r'mβ', 'mb'),
+        (rf'({regex_char_class("".join(non_aspirated))})(?!ː)h', r'\g<1>ʰ'), (r'mβ', 'mb'),
         (rf'(?={consonants})wj(?={consonants})', choose(['wɪ', 'ʊj'])),
         (rf'(?={consonants})jw(?={consonants})', choose(['jʊ', 'ɪw'])),
         (rf'(?={consonants})j$', 'ɪ'), (rf'(?={consonants})w$', 'ʊ'),
