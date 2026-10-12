@@ -186,7 +186,7 @@
     "k": {
       "classe": ["velar", "oclusiva", "surda"],
       "possibilidades": ["k", "kʰ", "g", "x"],
-      "chances": [70, 10, 10, 10]
+      "chances": [80, 5, 10, 5]
     },
     "g": {
       "classe": ["velar", "oclusiva", "sonora"],

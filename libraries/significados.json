@@ -53,7 +53,10 @@
       "vento",
       "nuvem",
       "chama",
-      "fumaca"
+      "fumaca",
+      "enseada",
+      "baia",
+      "rio"
     ],
     "botanica": ["arvore", "planta", "semente", "ramo", "folha", "raiz"],
     "espaco": [

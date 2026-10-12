@@ -466,6 +466,7 @@ def cluster_alveolares(palavra:list[str], loc_1:str, loc_2:str)->str:
     return palavra
 
 def cluster_fricativas(palavra:list[str], loc_1:int, loc_2:int)->list[str]:
+    palavra = corrigir_palavra(list(palavra))
     classe_verificar_A:list[str] = verificar_classe(palavra[loc_1])
     classe_verificar_B:list[str] = verificar_classe(palavra[loc_2])
     if(classe_verificar_A[1] == 'ficativa' and classe_verificar_B[1] == 'fricativa'):

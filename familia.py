@@ -2320,3 +2320,40 @@ class FamiliaLinguistica:
                 self.montar_frase(lingua, True, True)
                 print("")
                 print("="*50)
+    
+    def guardar_linguas(self)->None:
+        linguas = self.dialetos_criados
+        nomes:list[str] = linguas.keys()
+        for index, nome in enumerate(nomes):
+            if(nomes not in self.linguas_nao_mutaveis):
+                ramo = linguas[nome]
+                dicionario = ramo["lingua"]
+                gramatica = ramo["gramatica"]
+                with open(f"linguas_salvas/lingua{index}.txt", "w", encoding="utf-8") as arquivo:
+                    conteudos:list[str] = ["gramatica", "lexico"]
+                    arquivo.write(f"Língua {nome}\n")
+                    for conteudo in conteudos:
+                        if(conteudo == "gramatica"):
+                            gramatica_lista:list[str] = list(gramatica.keys())
+                            for g in gramatica_lista:
+                                texto:str = "="*20 + g.upper() + "="*20 +"\n"
+                                arquivo.write(texto)
+                                descricao:dict[str, str] = gramatica[g]
+                                if(not isinstance(descricao, str)):
+                                    descricao:dict[str, str] = gramatica[g]
+                                    for d in descricao.keys():
+                                        arquivo.write(f"{d} : {descricao[d]}\n")
+                                else:
+                                    arquivo.write(f"{gramatica[g]}\n")
+
+                        else:
+                            categorias:list[str] = ["substantivo", "verbo", "adjetivo"]
+                            for categoria in categorias:
+                                texto:str = "="*20 + categoria.upper() + "="*20 +"\n"
+                                arquivo.write(texto)
+                                cat_lista:list[int] = self.retornar_da_gramatica(nome, categoria)
+                                for cat in cat_lista:
+                                    descricao:dict[str, str|list[str]|int|float] = dicionario[cat]
+                                    palavra:str = descricao["palavra"]
+                                    significado:str = ", ".join(descricao["significado"]) if (len(descricao["significado"])>1) else descricao["significado"][0]
+                                    arquivo.write(f"{significado} : {palavra}\n")
