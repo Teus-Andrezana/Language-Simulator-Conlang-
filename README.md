@@ -1,10 +1,10 @@
 # Language-Simulator-Conlang
 
-A Python project for generating artificial languages (conlangs), exploring phonetic patterns, and developing language families from a base language. The central idea is to simulate how a language can arise, evolve, and branch into dialects by creating sounds, syllable structure, stress rules, vocabulary, and phonological change over time.
+A Python project for generating artificial languages (conlangs), exploring phonetic patterns, and developing language families from a proto-language. The central idea is to simulate how a language can arise, evolve, and branch into dialects by creating sounds, syllable structure, stress rules, vocabulary, and phonological changes over time. The project is entirely based on International Phonetic Alphabet (IPA).
 
 ## Author note
 
-This project was created by a curious enthusiast rather than a professional linguist. The goal is to explore, experiment, and learn in a practical way how languages can be modeled computationally. Suggestions, feedback, and ideas are very welcome.
+This project was created by a curious enthusiast rather than a professional linguist. The goal is to explore, experiment, and learn in a practical way how languages can be modeled computationally. Suggestions, feedback, and ideas are very welcome. Of course, I'll study more about and add the authores I'll be basing on, so the program get more consistent.
 
 ## Central theme of the project
 
@@ -32,8 +32,8 @@ In other words, it works like a computational linguistics lab: from a set of sou
 - [familia.py](familia.py): contains the `FamiliaLinguistica` class, which creates dialects and language families from the original language, simulating evolution and branching.
 - [tools.py](tools.py): contains helper functions for phonetic analysis, sound changes, vowel/consonant classification, lenition, harmony, and word adjustment.
 - [conlang.ipynb](conlang.ipynb): interactive notebook for experiments, testing, and visual exploration of the generator.
-- [biblioteca/fonetica.json](biblioteca/fonetica.json): phonetic rules and sound classification database.
-- [biblioteca/significados.json](biblioteca/significados.json): dictionary of meanings and concepts used as the basis for lexical generation.
+- [library/fonetica.json](library/fonetica.json): phonetic rules and sound classification database.
+- [library/significados.json](library/significados.json): dictionary of meanings and concepts used as the basis for lexical generation.
 - [padrao.dm](padrao.dm): contains padronizations varibles' names (in process).
 
 ## How it works
