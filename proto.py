@@ -61,10 +61,17 @@ class ProtoLingua:
 
                 "assimilacao":0.0,
                 "lenicao":0.0,
+                "forticao":0.0,
+                
                 "palatalizacao":0.0,
+                "aspiracao":0.0,
+                "labializacao":0.0,
 
+                "lambdacismo":0.0,
+                "rotacismo":0.0,
                 "reducao_vocal":0.0,
                 "nasalizacao":0.0,
+                "fricativizacao":0.0
             },
             "lingua":{},
         }

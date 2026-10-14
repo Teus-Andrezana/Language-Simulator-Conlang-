@@ -462,6 +462,8 @@ class FamiliaLinguistica:
                     except:
                         pass
 
+                self.atualizar_configuracao(lingua = d)
+
     def implementar_efeitos(self, lingua:str, word:str)->str:
         """
         Faz passo a passo do processo de desenvolvimento de uma palavra. Função semelhante a tools.surtir_efeito(),
@@ -475,22 +477,53 @@ class FamiliaLinguistica:
             >>> implementar_efeitos(lingua_a, word = "anpagtop")
             "ampaktop"
         """
+        config_dict:dict[str, callable] = {
+            "metatase":tools.metatase,
+            "epentese":tools.epenthesis,
+            "harmonia":tools.implementar_harmonia,
+            # "eferese":tools.afer
+            # "sincope":tools.sincope
+            "apocope":tools.apocope,
+            "assimilacao":tools.assimilar,
+            # "lenicao":tools.
+            "forticao":tools.fortition,
+            # "palatalizacao":tools.palatalizar,
+            "aspiracao":tools.aspiration,
+            # "labializacao":tools.labialization,
+            "lambdacismo":tools.lambdacism,
+            "rotacismo":tools.rotacism,
+            #"reducao_vocal":,
+            # "nasalizacao":tools.nasalization,
+            # "fricativizacao":tools.fricativization,
+        }
+
         silaba_tonica:str = self.dialetos_criados[lingua]["gramatica"]["silaba_tonica"]
         config:dict[str, float] = self.dialetos_criados[lingua]["configuracao"]
         if(isinstance(word, list)):
             word = "".join(word)
-        if(random()<0.1):
-            word = tools.devoicing(word)
-        word = tools.apocope(config["apocope"], silaba_tonica, word)
-        word = tools.epenthesis(config["epentese"], word)
+        # criar a possibilidade de cada um acontecer sem ter que fazer isso em cada função.
+        # tem que ser em uma só funçao *esta*
+        lista_configuracoes:list[str] = list(config.keys())
+        conf_sorteada:str = choice(lista_configuracoes)
+        c_float = config[conf_sorteada]
+        if(conf_sorteada in config_dict.keys()):
+            if(conf_sorteada in ["apocope", "metatase", "assimilacao", "lenicao", "epentese", "harmonia", "sincope", "eferese"]):
+                if(random()<c_float):
+                    if(conf_sorteada == "apocope"):
+                        word = config_dict[conf_sorteada](silaba_tonica, word)
+                    else:
+                        word = config_dict[conf_sorteada](word)
+            else:                        
+                if(random()*2 < c_float and c_float>0.45):
+                    word = config_dict[conf_sorteada](word) # fazer else, alguns precisam de mais parametros
+        if(random()<0.2):
+            tools.devoicing(word)
         effects:list[callable] = [tools.esquecer, tools.rotica_probida, tools.filtro_fonetico]
         for function in effects:
             word = function(word)
         word = tools.mudancas_w_j(word, self.dialetos_criados[lingua]["sons"]["consoantes"])
-        word = tools.assimilar(config['assimilacao'], word)
         word = tools.sandhi(word)
         word = tools.filtro_fonetico(word)
-        word = tools.implementar_harmonia(config["harmonia"], word)
         word = tools.retornar_palavra_atona(word, silaba_tonica)
         return word
 

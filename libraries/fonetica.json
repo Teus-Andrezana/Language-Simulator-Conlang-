@@ -275,13 +275,13 @@
     },
     "s": {
       "classe": ["alveolar", "fricativa", "surda"],
-      "possibilidades": ["s", "h", "ʦ", "z", "θ"],
-      "chances": [80, 50, 30, 20, 16]
+      "possibilidades": ["s", "ʦ", "z", "θ"],
+      "chances": [70, 10, 10, 10]
     },
     "z": {
       "classe": ["alveolar", "fricativa", "sonora"],
       "possibilidades": ["z", "s", "ð", "ʣ"],
-      "chances": [80, 50, 20, 10]
+      "chances": [70, 10, 10, 10]
     },
     "ʃ": {
       "classe": ["pos-alveolar", "fricativa", "surda"],
@@ -291,7 +291,7 @@
     "ʒ": {
       "classe": ["pos-alveolar", "fricativa", "sonora"],
       "possibilidades": ["ʒ", "z", "ʃ", "ʑ"],
-      "chances": [80, 30, 20, 16]
+      "chances": [70, 10, 10, 10]
     },
     "ɕ": {
       "classe": ["alveolo-palatal", "fricativa", "surda"],
@@ -400,8 +400,8 @@
     },
     "l": {
       "classe": ["alveolar", "lateral", "aproximante", "sonora"],
-      "possibilidades": ["l", "ɫ", "ɾ", "ɬ"],
-      "chances": [80, 40, 20, 10]
+      "possibilidades": ["l", "ɫ", "ɬ"],
+      "chances": [70, 20, 10]
     },
     "ʎ": {
       "classe": ["palatal", "lateral", "aproximante", "sonora"],
@@ -430,8 +430,8 @@
     },
     "ɾ": {
       "classe": ["alveolar", "tap", "sonora"],
-      "possibilidades": ["ɾ", "r", "l", "ɹ", "ɺ"],
-      "chances": [80, 40, 16, 10, 6]
+      "possibilidades": ["ɾ", "r", "ɹ"],
+      "chances": [80, 10, 10]
     },
     "ʀ": {
       "classe": ["uvular", "trill", "sonora"],
@@ -1165,5 +1165,16 @@
       "chances": [70, 60, 50, 30, 10]
     }
   },
-  "estrutura": ["CVC", "VCV", "VCVC", "CVCV"]
+  "estrutura": [
+    "CVC",
+    "VCV",
+    "VCVC",
+    "CVCV",
+    "VCVCV",
+    "CVCVC",
+    "VCVCVC",
+    "CVCVCV",
+    "VCVCVCV",
+    "CVCVCVC"
+  ]
 }

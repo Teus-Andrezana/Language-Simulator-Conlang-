@@ -625,7 +625,7 @@ def conferir_consoante(som:str, classificacao:list[str])->bool: #verifica se a c
                 return False
     return True
 
-def metatase(configuracao:float, palavra:list[str])->list[str]:
+def metatase(palavra:list[str])->list[str]:
     """
     RESUMO
         Pega uma letra aleatoria e muda de lugar com outra.
@@ -635,22 +635,21 @@ def metatase(configuracao:float, palavra:list[str])->list[str]:
         list[str]
     """
     if(len(palavra)>3):
-        if(random()<configuracao):
-            letra:int = randint(0,len(palavra)-1)
-            letra_atual:str=palavra[letra]
-            if(letra>1):
-                if(random()>0.5 and letra<len(palavra)-1):
-                    letra_alvo:str=palavra[letra+1]
-                    palavra[letra]=letra_alvo
-                    palavra[letra+1]=letra_atual
-                else:
-                    letra_alvo:str=palavra[letra-1]
-                    palavra[letra]=letra_alvo
-                    palavra[letra-1]=letra_atual
-            else:
+        letra:int = randint(0,len(palavra)-1)
+        letra_atual:str=palavra[letra]
+        if(letra>1):
+            if(random()>0.5 and letra<len(palavra)-1):
                 letra_alvo:str=palavra[letra+1]
                 palavra[letra]=letra_alvo
                 palavra[letra+1]=letra_atual
+            else:
+                letra_alvo:str=palavra[letra-1]
+                palavra[letra]=letra_alvo
+                palavra[letra-1]=letra_atual
+        else:
+            letra_alvo:str=palavra[letra+1]
+            palavra[letra]=letra_alvo
+            palavra[letra+1]=letra_atual
     return palavra
 
 def efeito_separador(palavra:list[str])->list[str]:
@@ -936,13 +935,10 @@ def harmonia_vocal(palavra: list[str], loc_1: int, loc_2: int) -> list[str]:
 
     return palavra
 
-def implementar_harmonia(config: float, palavra: str) -> str:
+def implementar_harmonia(palavra: str) -> str:
     """
     Verifica cada vogal de trás para frente, ajustando a harmonia vocálica.
     """
-    if random() >= config:
-        return palavra
-        
     palavra_lista = corrigir_palavra(list(palavra))
     lista_index = [i for i, letra in enumerate(palavra_lista) if eh_vogal(letra)]
     
@@ -979,7 +975,7 @@ def mudancas_w_j(word:list[str], acervo:list[str])->list[str]:
     return word
 
 ### EFEITOS POR *REGEX*
-def apocope(config:float, tonic_syllable:str, word:str)->str:
+def apocope(tonic_syllable:str, word:str)->str:
     """
     Perde vogal ou consoante nos extremos da palavra, dependendo do tipo de preferência
     de sílaba.
@@ -992,16 +988,15 @@ def apocope(config:float, tonic_syllable:str, word:str)->str:
     >>> apocope(dialetos, ['b','ə','k','m','ɐ'])
     ['b','ə','k','m']
     """
-    if(random()<config):
-        if(tonic_syllable == 'oxitona'):
-            word = re.sub(r'^[ɪɐʊəh]', '', word)
-        elif(tonic_syllable == 'paroxitona'):
-            word = re.sub(r'^[ɪɐʊəh]|[ɪɐʊəh]$', '', word)
-        else:
-            word = re.sub(r'[ɪɐʊəh]$', '', word)
+    if(tonic_syllable == 'oxitona'):
+        word = re.sub(r'^[ɪɐʊəh]', '', word)
+    elif(tonic_syllable == 'paroxitona'):
+        word = re.sub(r'^[ɪɐʊəh]|[ɪɐʊəh]$', '', word)
+    else:
+        word = re.sub(r'[ɪɐʊəh]$', '', word)
     return word
 
-def epenthesis(config:float, word:str)->str:
+def epenthesis(word:str)->str:
     """
     Adds a vowel or consonant to word, sometimes to make it easy to speak or due to a change on the language
     (like changing the most of the language to syllable).
@@ -1010,12 +1005,11 @@ def epenthesis(config:float, word:str)->str:
     Retorno:
         str
     """
-    if(random()<config):
-        help_vowel = choice(['ɪ','ɐ','ʊ','ə']) #pode ser melhor usar as vogais próximas na própria palavra em vez de um som aleatório
-        word = re.sub(rf"({regex_char_class(global_consonants_str)})(?={regex_char_class(global_consonants_str)})", rf'\g<1>{help_vowel}', word)
+    help_vowel = choice(['ɪ','ɐ','ʊ','ə']) #pode ser melhor usar as vogais próximas na própria palavra em vez de um som aleatório
+    word = re.sub(rf"({regex_char_class(global_consonants_str)})(?={regex_char_class(global_consonants_str)})", rf'\g<1>{help_vowel}', word)
     return word
 
-def assimilar(config:float, word:str)->str:
+def assimilar(word:str)->str:
     """
     Faz assimilacao entre dois sons proximos, trazendo
         a coda mais proxima da pos-coda ou a vogal mais proxima da outra.
@@ -1028,20 +1022,19 @@ def assimilar(config:float, word:str)->str:
         >>> assimilar(word = "anpu")
         "ampu"
     """
-    if(random()<config): # aqui é para ser a chance em configuracao da lingua
-        sonora = "".join(verificar_classes_regra_fonetica(["sonora"], "consoante", 1)[0])
-        surda = "".join(verificar_classes_regra_fonetica(["surda"], "consoante", 1)[0])
-        bilabial_oclusiva = "".join(verificar_classes_regra_fonetica(["bilabial", "oclusiva"], "consoante", 1)[0])
-        alveolar_oclusiva = "".join(verificar_classes_regra_fonetica(["alveolar", "oclusiva"], "consoante", 1)[0])
-        lista_efeitos = [
-            (rf"n(?={regex_char_class(bilabial_oclusiva)})", "m"), (rf"m(?={regex_char_class(alveolar_oclusiva)})", "n"), 
-            (rf"({regex_char_class(surda)})(?={regex_char_class(sonora)})", lambda match:retornar_aproximante(match.group(1), "sonora", 2)),
-            (rf"({regex_char_class(sonora)})(?={regex_char_class(surda)})", lambda match:retornar_aproximante(match.group(1), "surda", 2)),
-            (r"eo", "oː"), (r"oe", "eː")
-        ]
-        for e in lista_efeitos:
-            if(random()>0.5): # para evitar que a mudanca seja uma unica vez
-                word = re.sub(e[0], e[1], word)
+    sonora = "".join(verificar_classes_regra_fonetica(["sonora"], "consoante", 1)[0])
+    surda = "".join(verificar_classes_regra_fonetica(["surda"], "consoante", 1)[0])
+    bilabial_oclusiva = "".join(verificar_classes_regra_fonetica(["bilabial", "oclusiva"], "consoante", 1)[0])
+    alveolar_oclusiva = "".join(verificar_classes_regra_fonetica(["alveolar", "oclusiva"], "consoante", 1)[0])
+    lista_efeitos = [
+        (rf"n(?={regex_char_class(bilabial_oclusiva)})", "m"), (rf"m(?={regex_char_class(alveolar_oclusiva)})", "n"), 
+        (rf"({regex_char_class(surda)})(?={regex_char_class(sonora)})", lambda match:retornar_aproximante(match.group(1), "sonora", 2)),
+        (rf"({regex_char_class(sonora)})(?={regex_char_class(surda)})", lambda match:retornar_aproximante(match.group(1), "surda", 2)),
+        (r"eo", "oː"), (r"oe", "eː")
+    ]
+    for e in lista_efeitos:
+        if(random()>0.5): # para evitar que a mudanca seja uma unica vez
+            word = re.sub(e[0], e[1], word)
     return word
 
 def ajuste_diacritico(word:str, vowels:str)->str: # MANUTENCAO *
@@ -1062,6 +1055,77 @@ def ajuste_diacritico(word:str, vowels:str)->str: # MANUTENCAO *
         # word = re.sub(rf"{v}ː(?=[{v}])", rf"{padrao}", word)
         word = re.sub(rf"{re.escape(v)}(?={regex_char_class(v)})", rf"{padrao}", word)
     return word
+
+def lambdacism(word:str)->str:
+    """
+    Change letters as R or J to an L ou Ll (spanish exemple).
+    Args:
+        word (str): a string sequence, as "bed", "kob", etc.
+    Return:
+        str
+    Exemple:
+    >>> lambdacism(word = "jarn")
+    "ʎarn"
+    >>> lambdacism(word = "bora")
+    "bola"
+    """
+    word = re.sub(
+        rf"(?<=[{global_vowels_str}])j(?=[{global_vowels_str}])|^j(?=[{global_vowels_str}])|(?<=[{global_vowels_str}])j$",
+        "ʎ", word
+    )
+
+    word = re.sub(r"[rɾ]", "l", word)
+    return word
+
+def rotacism(word:str)->str:
+    """
+    Change letters as T/D or S or K/G or L to an R-like.
+    """
+    possible_mutations = []
+
+    if re.search(r"l", word):
+        possible_mutations.append(re.sub(r"l", "ɾ", word))
+
+    if re.search(rf"(?<=[{global_vowels_str}])[td](?=[{global_vowels_str}])", word):
+        possible_mutations.append(
+            re.sub(rf"(?<=[{global_vowels_str}])[td](?=[{global_vowels_str}])", "ɾ", word)
+        )
+
+    if(re.search(rf"(?<=[{global_vowels_str}])s(?=[{global_vowels_str}])|(?<=[{global_vowels_str}])s$|^s(?=[{global_vowels_str}])", word)):
+        possible_mutations.append(
+            re.sub(
+                rf"(?<=[{global_vowels_str}])s(?=[{global_vowels_str}])|(?<=[{global_vowels_str}])s$|^s(?=[{global_vowels_str}])", 
+                "ɾ", 
+                word
+            )
+        )
+
+    if re.search(r"[kg]", word):
+        possible_mutations.append(re.sub(r"[kg]", "x", word))
+
+    if possible_mutations:
+        return choice(possible_mutations)
+    return word
+
+def aspiration(word:str)->str:
+    """
+    """
+    pattern  = (
+        rf"(?<=[{global_vowels_str}])[sxf](?=[{global_vowels_str}])"
+        rf"|(?<=[{global_vowels_str}])[sxf]$"
+        rf"|^[sxf](?=[{global_vowels_str}])"
+        rf"(?<=[{global_vowels_str}])[sxf](?=[{global_consonants_str}])"
+    )
+    word = re.sub(pattern, "h", word)
+
+    return word
+
+def fortition(word:str)->str:
+    """
+    """
+    
+    return word
+
 
 def devoicing(word:str)->str:
     """
@@ -1141,8 +1205,7 @@ def filtro_fonetico(word:str)->str:
         (rf'(?<={consonants})wː(?={consonants})', 'ʊː'), (rf'(?<={consonants})w(?={consonants})', 'ʊ'),
         (rf'(?<={consonants})j(?={consonants})', 'ɪ'), (rf'(?<={consonants})jː(?={consonants})', 'ɪː'),
         (rf'(?<={vowels})ɪ|ɪ(?={vowels})', 'j'), (rf'(?<={vowels})ʊ|ʊ(?={vowels})', 'w'),
-        (rf'({vowels})ww', choose(['wʊ', 'w'])),(rf'ww(?={vowels})', choose(['ʊw', 'w'])),
-        (rf'({vowels})ww', choose(['jɪ', 'j', 'ɪː'])),(rf'ww(?={vowels})', choose(['ɪj', 'j', 'ɪː'])),
+        (r'ww', choose(['wʊ', 'wʊ', 'ʊː'])), (r'jj', choose(['ɪj', 'jɪ', 'ɪː'])),
         (rf'ʝ$|(?<={consonants})ʝ|ʝ(?={consonants})', 'j'),
     ]
     word = iter_regex(effect_list, word)
