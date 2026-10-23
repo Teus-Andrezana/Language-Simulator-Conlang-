@@ -8,7 +8,7 @@
       "abelha",
       "ovo",
       "cobra",
-      "fish",
+      "peixe",
       "piolho"
     ],
     "corpo": [
@@ -56,7 +56,8 @@
       "fumaca",
       "enseada",
       "baia",
-      "rio"
+      "rio",
+      "cogumelo"
     ],
     "botanica": ["arvore", "planta", "semente", "ramo", "folha", "raiz"],
     "espaco": [
@@ -86,7 +87,7 @@
     ],
     "sentimento": ["dor", "medo", "furia", "alegria", "ajuda"],
     "sobrenatural": ["espirito", "deus"],
-    "social": ["esposa", "esposo"],
+    "social": ["esposa", "esposo", "gente"],
     "pergunta": ["que", "como", "nao"]
   },
   "verbo": {
@@ -173,9 +174,9 @@
       "pequeno",
       "longo",
       "alto",
+      "baixo",
       "redondo",
       "fundo",
-      "pesado",
       "cheio"
     ],
     "sensorial": [

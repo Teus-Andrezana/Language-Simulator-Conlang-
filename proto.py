@@ -71,6 +71,7 @@ class ProtoLingua:
                 "rotacismo":0.0,
                 "reducao_vocal":0.0,
                 "nasalizacao":0.0,
+                "desnazalizacao":0.0,
                 "fricativizacao":0.0
             },
             "lingua":{},
@@ -128,9 +129,9 @@ class ProtoLingua:
         # exoticas:list[str] = ['ɶ', 'æ', 'ʌ', 'œ', 'ø', 'ɤ', 'ɯ']
         vogais_listadas:list[str]=['a', 'i', 'u']
         if(random()>0.5):
-            vogais_listadas.extend(['e', 'o'])
+            vogais_listadas.extend(['e', 'o', 'ɛ', 'ɔ'])
             if(random()>0.9):
-                secundarias:list[str] = ['ä', 'ɑ', 'ɛ', 'ɔ', 'ɨ']
+                secundarias:list[str] = ['ä', 'ɑ', 'ɨ']
                 index:int = 0
                 while(index < randint(1, len(secundarias)-1)):
                     vogais_listadas.append(secundarias.pop(randint(0, len(secundarias)-1)))
@@ -160,15 +161,15 @@ class ProtoLingua:
                 index+=1
             return lista_sons
 
-        consoantes_listadas:list[str]=['p', 't', 'k', 'w', 'j', 'm', 'n', 's', 'ɾ']
+        consoantes_listadas:list[str]=['p', 't', 'k', 'm', 'n', 's', 'ɾ'] #'w', 'j'
         # incomuns = ['ʔ', 'r', 'x', 'q', 'ŋ', 'ɲ', 'z', 'ʃ', 'ʒ', 'ɢ', 'ɣ']
         # raras = ['ʈ', 'ɖ', 'ɽ', 'ʂ', 'ʐ', 'ɳ', 'χ', 'ʁ', 'ʀ', 'ɬ', 'ɮ', 'ɸ', 'β', 'ɹ', 'ɻ', 'ʋ', 'ɺ']
         if(random()>=0.3):
             comuns = ['h', 'b', 'd', 'g', 'l', 'ŋ']
             consoantes_listadas.extend(iterar(comuns))
-        if(random()>0.7):
-            aspiradas:list[str] = ['pʰ', 'tʰ', 'kʰ']
-            consoantes_listadas.extend(aspiradas)
+        # if(random()>0.7):
+        #     aspiradas:list[str] = ['pʰ', 'tʰ', 'kʰ']
+        #     consoantes_listadas.extend(aspiradas)
         if(random()>=0.6):
             glotais:list[str] = ['ʔ', 'q', 'ɢ', 'ɣ']
             consoantes_listadas.extend(iterar(glotais))
@@ -359,8 +360,8 @@ class ProtoLingua:
         >>>class.gerar_tonicidade()
         "oxitona"
         """
-        syllables:list[str] = ['oxitona', 'paroxitona', 'proparoxitona']
-        chances:list[int] = [50, 40, 10]
+        syllables:list[str] = ['oxitona', 'paroxitona'] #, 'proparoxitona'
+        chances:list[int] = [50, 40] #, 10
         return choices(population = syllables, weights = chances, k = 1)[0]
 
     def sistema_posicional(self): # <============== ainda estou aqui

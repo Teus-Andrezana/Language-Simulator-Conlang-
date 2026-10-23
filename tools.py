@@ -309,39 +309,6 @@ def retornar_palavra_atona(palavra:str, silaba_tonica:str)->str:
     palavra = harmonized_word[::-1]
     return "".join(palavra)
 
-def palatalizar(palavra:list[str], loc_1:int, loc_2:int)->list[str]:
-    """
-    Permite a palatalização. Não é garantia de que isso vai acontecer.
-    Analisa quantas vogais altas fechadas estão próximas da consoante, o que
-    pode aumentar as chances de palatalização.
-
-    EXEMPLO
-    >>>palatalizar(['s', 'j', 'ɪ', 's', 'ɪ', 'u', 't', 'ʊ'])
-    ['s', 'j', 'ɪ', 'ʃ', 'ɪ', 'u', 't', 'ʊ']
-    """
-    def eh_vogal_gatilho(v:str)->bool:
-        return eh_vogal(v) and not any(i in ['aberta', 'posterior'] for i in verificar_classe(v))
-
-    def aplicar_traco(loc:int)->list[str]:
-        traco:str = f'pos-{verificar_classe(palavra[loc])[0]}'
-        palavra[loc] = retornar_aproximante(palavra[loc], traco, 0)
-
-    if(eh_consoante(palavra[loc_1])):
-        if(eh_vogal_gatilho(palavra[loc_2])):
-            if(loc_1-1>=0 and eh_vogal_gatilho(palavra[loc_1-1])):
-                aplicar_traco(loc_1)
-            elif(random()>0.6):
-                aplicar_traco(loc_1)
-
-    elif(eh_vogal_gatilho(palavra[loc_1])):
-        if(eh_consoante(palavra[loc_2])):
-            if(loc_2+1<len(palavra) and eh_vogal_gatilho(palavra[loc_2+1])):
-                aplicar_traco(loc_2)
-            elif(random()>0.6):
-                traco:str = f'pos-{verificar_classe(palavra[loc_2])[0]}'
-                palavra[loc_2] = retornar_aproximante(palavra[loc_2], traco, 0)
-    return palavra
-
 def excesso_ditongo(palavra:list[str], loc_1:int, loc_2:int)->list[str]:
     """
     RESUMO
@@ -703,24 +670,27 @@ def retornar_aproximante(som:str, traco:str, posicao:int)->str|list[str]:
     >>> retornar_aproximante("g", "surdo", 2)
     "k"
     """
-    som_base = som[0]
-    tipo_de_letra:str = "consoante" if eh_consoante(som_base[0]) else "vogal"
-    classe_som:list[str] = regra_fonetica[tipo_de_letra][som_base]["classe"].copy()
-    if(len(classe_som)-1<posicao):
-        classe_som.append(traco)
-    else:
-        classe_som[posicao] = traco
-    sons_possiveis:list[str] = []
-    for s in regra_fonetica[tipo_de_letra]:
-        if(regra_fonetica[tipo_de_letra][s]["classe"] == classe_som):
-            sons_possiveis.append(s)
-    if(len(sons_possiveis)>1):
-        return sons_possiveis
-    elif(len(sons_possiveis) == 1):
-        return sons_possiveis[0]
-    else:
-        return som
-    # return sons_possiveis if len(sons_possiveis) else som
+    try:
+        som_base = som[0]
+        tipo_de_letra:str = "consoante" if eh_consoante(som_base[0]) else "vogal"
+        classe_som:list[str] = regra_fonetica[tipo_de_letra][som_base]["classe"].copy()
+        if(len(classe_som)-1<posicao):
+            classe_som.append(traco)
+        else:
+            classe_som[posicao] = traco
+        sons_possiveis:list[str] = []
+        for s in regra_fonetica[tipo_de_letra]:
+            if(regra_fonetica[tipo_de_letra][s]["classe"] == classe_som):
+                sons_possiveis.append(s)
+        if(len(sons_possiveis)>1):
+            return sons_possiveis
+        elif(len(sons_possiveis) == 1):
+            return sons_possiveis[0]
+        else:
+            return som
+        # return sons_possiveis if len(sons_possiveis) else som
+    except Exception as e:
+        print(f"Problema na classe: {e.__class__}\nSom inserido: {som}\nTraço inserido: {traco}\nPosição inserida: {posicao}")
 
 def pegar_difone(consoante:str)->str: # pega uma consoante e junta com um diacrítico, criando uma nova palavra
     diacriticos:list[str]=['ʷ', 'ʲ', 'ʰ']
@@ -745,16 +715,6 @@ def se_tem_arredondamento(palavra:list[str], som_objetivo:str, loc_letra:int)->l
     palavra[loc_letra] = som_objetivo[0]
     palavra.insert(loc_letra+1, 'ʊ')
     return palavra
-
-def proibicoes_em_difones(palavra:list[str], som_objetivo:str, loc_letra:int, proibicao:bool)->list[str]:
-  if(eh_consoante(som_objetivo)):
-    som_objetivo:str=choice(regra_fonetica['consoante'][som_objetivo]['possibilidades'])
-    if(proibicao):
-      palavra[loc_letra] = som_objetivo[0]
-  else:
-    print(f"Som /{som_objetivo}/ não encontrado")
-    palavra[loc_letra] = som_objetivo.replace('ʲ', '').replace('ʷ', '').replace('ʰ', '')
-  return palavra
 
 def rotica_probida(word:str)->str:
     """
@@ -930,7 +890,6 @@ def harmonia_vocal(palavra: list[str], loc_1: int, loc_2: int) -> list[str]:
                     palavra[loc_1] = resultado_fonema[0][0]
 
         except Exception:
-            # Durante os testes, não use "pass" cego, ou você não verá erros reais de tipagem.
             pass
 
     return palavra
@@ -956,8 +915,8 @@ def mudancas_w_j(word:list[str], acervo:list[str])->list[str]:
         palavra (list[str]): sequencia de caracteres
         acervo (list[str]): as consoantes existentes na língua para checar se x mudança é possível
     Exemplo:
-    >>> mudanca_w_j(['p','a','j','o'], [..., 'ʝ', ...])
-    ['p','a','ʝ','o']
+        >>> mudanca_w_j(['p','a','j','o'], [..., 'ʝ', ...])
+        ['p','a','ʝ','o']
     """
     def verificar_e_atualizar(word:str, som:str, mudado:str)->str:
         new_word = re.sub(rf'{re.escape(som)}(?={regex_char_class(global_vowels_str)})', rf"{mudado}", word)
@@ -984,29 +943,40 @@ def apocope(tonic_syllable:str, word:str)->str:
         word (str): palavra contida no dicionário da língua
     Retorno:
         str
-    Exemplo:
-    >>> apocope(dialetos, ['b','ə','k','m','ɐ'])
-    ['b','ə','k','m']
+    Exemple:
+        >>> apocope(tonic_syllable = "proparoxitona", word = 'bəkmɐ')
+        'bəkm'
+        >>> apocope(tonic_syllable = "paroxitona", word = "sonkot")
+        "sonk"
     """
-    if(tonic_syllable == 'oxitona'):
-        word = re.sub(r'^[ɪɐʊəh]', '', word)
-    elif(tonic_syllable == 'paroxitona'):
-        word = re.sub(r'^[ɪɐʊəh]|[ɪɐʊəh]$', '', word)
-    else:
-        word = re.sub(r'[ɪɐʊəh]$', '', word)
+    if(len(word)>3):
+        if(tonic_syllable != 'oxitona'):
+            word = re.sub(r".$", "", word)
+            if(random()>0.8 and len(word)>2):
+                word = re.sub(r".$", "", word)
+    return word
+
+def aphaeresis(word:str)->str:
+    """
+    """
+    if(len(word)>4):
+        word = re.sub(r"^.", "", word)
+        if(random()>0.8 and len(word)>2):
+            word = re.sub(r"^.", "", word)
     return word
 
 def epenthesis(word:str)->str:
     """
     Adds a vowel or consonant to word, sometimes to make it easy to speak or due to a change on the language
-    (like changing the most of the language to syllable).
+    (like changing the most of the language to syllabary system).
     Args:
         word (str): word to be changed;
     Retorno:
         str
     """
+    consonants = regex_char_class(global_consonants_str)
     help_vowel = choice(['ɪ','ɐ','ʊ','ə']) #pode ser melhor usar as vogais próximas na própria palavra em vez de um som aleatório
-    word = re.sub(rf"({regex_char_class(global_consonants_str)})(?={regex_char_class(global_consonants_str)})", rf'\g<1>{help_vowel}', word)
+    word = re.sub(rf"({consonants})(?={consonants})", rf'\g<1>{help_vowel}', word)
     return word
 
 def assimilar(word:str)->str:
@@ -1014,14 +984,26 @@ def assimilar(word:str)->str:
     Faz assimilacao entre dois sons proximos, trazendo
         a coda mais proxima da pos-coda ou a vogal mais proxima da outra.
     Args:
-        - config (float) : numero decimal em configuracao da lingua (class.dialetos_criados[lingua_a]["configuracao"])
-        - word (str) : espera uma lista de strings
+        - word (str) : espera uma lista de strings;
     Return:
         str
     Exemple:
         >>> assimilar(word = "anpu")
         "ampu"
     """
+    def assimilar_aproximadas(word:str)->str:
+        word_list = corrigir_palavra(list(word))
+        index:int = 0
+        while(index<len(word_list)-1):
+            letra_um:str = word_list[index]
+            letra_dois:str = word_list[index+1]
+            qualidade_som:list[str] = ["sonora", "surda"]
+            for qs in qualidade_som:
+                if(retornar_aproximante(letra_um, qs, 2) == letra_dois):
+                    word_list[index] = letra_dois
+            index+=1
+        return "".join(word_list)
+
     sonora = "".join(verificar_classes_regra_fonetica(["sonora"], "consoante", 1)[0])
     surda = "".join(verificar_classes_regra_fonetica(["surda"], "consoante", 1)[0])
     bilabial_oclusiva = "".join(verificar_classes_regra_fonetica(["bilabial", "oclusiva"], "consoante", 1)[0])
@@ -1030,11 +1012,12 @@ def assimilar(word:str)->str:
         (rf"n(?={regex_char_class(bilabial_oclusiva)})", "m"), (rf"m(?={regex_char_class(alveolar_oclusiva)})", "n"), 
         (rf"({regex_char_class(surda)})(?={regex_char_class(sonora)})", lambda match:retornar_aproximante(match.group(1), "sonora", 2)),
         (rf"({regex_char_class(sonora)})(?={regex_char_class(surda)})", lambda match:retornar_aproximante(match.group(1), "surda", 2)),
-        (r"eo", "oː"), (r"oe", "eː")
+        (r"eo", "o"), (r"oe", "e")
     ]
     for e in lista_efeitos:
         if(random()>0.5): # para evitar que a mudanca seja uma unica vez
             word = re.sub(e[0], e[1], word)
+    word = assimilar_aproximadas(word = word)
     return word
 
 def ajuste_diacritico(word:str, vowels:str)->str: # MANUTENCAO *
@@ -1069,10 +1052,8 @@ def lambdacism(word:str)->str:
     >>> lambdacism(word = "bora")
     "bola"
     """
-    word = re.sub(
-        rf"(?<=[{global_vowels_str}])j(?=[{global_vowels_str}])|^j(?=[{global_vowels_str}])|(?<=[{global_vowels_str}])j$",
-        "ʎ", word
-    )
+    vowels = regex_char_class(global_vowels_str)
+    word = re.sub(rf"(?<=[{vowels}])j(?=[{vowels}])|^j(?=[{vowels}])|(?<=[{vowels}])j$", "ʎ", word)
 
     word = re.sub(r"[rɾ]", "l", word)
     return word
@@ -1081,27 +1062,21 @@ def rotacism(word:str)->str:
     """
     Change letters as T/D or S or K/G or L to an R-like.
     """
+    vowels = regex_char_class(global_vowels_str)
     possible_mutations = []
 
     if re.search(r"l", word):
         possible_mutations.append(re.sub(r"l", "ɾ", word))
 
-    if re.search(rf"(?<=[{global_vowels_str}])[td](?=[{global_vowels_str}])", word):
-        possible_mutations.append(
-            re.sub(rf"(?<=[{global_vowels_str}])[td](?=[{global_vowels_str}])", "ɾ", word)
-        )
+    # if re.search(rf"(?<=[{vowels}])[td](?=[{vowels}])", word):
+    #     possible_mutations.append(
+    #         re.sub(rf"(?<=[{vowels}])[td](?=[{vowels}])", "ɾ", word)
+    #     )
 
-    if(re.search(rf"(?<=[{global_vowels_str}])s(?=[{global_vowels_str}])|(?<=[{global_vowels_str}])s$|^s(?=[{global_vowels_str}])", word)):
+    if(re.search(rf"(?<=[{vowels}])s(?=[{vowels}])|(?<=[{vowels}])s$|^s(?=[{vowels}])", word)):
         possible_mutations.append(
-            re.sub(
-                rf"(?<=[{global_vowels_str}])s(?=[{global_vowels_str}])|(?<=[{global_vowels_str}])s$|^s(?=[{global_vowels_str}])", 
-                "ɾ", 
-                word
-            )
+            re.sub(rf"(?<=[{vowels}])s(?=[{vowels}])|(?<=[{vowels}])s$|^s(?=[{vowels}])", "ɾ", word)
         )
-
-    if re.search(r"[kg]", word):
-        possible_mutations.append(re.sub(r"[kg]", "x", word))
 
     if possible_mutations:
         return choice(possible_mutations)
@@ -1110,37 +1085,107 @@ def rotacism(word:str)->str:
 def aspiration(word:str)->str:
     """
     """
+    consonants = regex_char_class(global_consonants_str)
+    vowels = regex_char_class(global_vowels_str)
     pattern  = (
-        rf"(?<=[{global_vowels_str}])[sxf](?=[{global_vowels_str}])"
-        rf"|(?<=[{global_vowels_str}])[sxf]$"
-        rf"|^[sxf](?=[{global_vowels_str}])"
-        rf"(?<=[{global_vowels_str}])[sxf](?=[{global_consonants_str}])"
+        rf"(?<=[{vowels}])[sxf](?=[{vowels}])"
+        rf"|(?<=[{vowels}])[sxf]$"
+        rf"|^[sxf](?=[{vowels}])"
+        rf"(?<=[{vowels}])[sxf](?=[{consonants}])"
     )
     word = re.sub(pattern, "h", word)
 
     return word
 
-def fortition(word:str)->str:
+def palatalizar(word:str)->str:
     """
-    """
-    
-    return word
+    Permite a palatalização. Não é garantia de que isso vai acontecer.
+    Analisa quantas vogais altas fechadas estão próximas da consoante, o que
+    pode aumentar as chances de palatalização.
 
+    EXEMPLO
+    >>>palatalizar(['s', 'j', 'ɪ', 's', 'ɪ', 'u', 't', 'ʊ'])
+    ['s', 'j', 'ɪ', 'ʃ', 'ɪ', 'u', 't', 'ʊ']
+    """
+    sounds:dict[str, str] = {
+        "t":"ʧ",
+        "d":"ʤ",
+        "s":"ʃ",
+        "z":"ʒ",
+        "k":"ʧ",
+        "g":"ʤ",
+        "n":"ɲ"
+    }
+    target_consonants = "".join(sounds.keys())
+    triggers = "iɪeyj"
+
+    def substituir(match: re.Match) -> str:
+        if match.group(1) is not None:
+            consoante = match.group(1)
+            gatilho = match.group(2)
+            novo_som = sounds.get(consoante)
+            return f"{novo_som}{gatilho}"
+
+        else:
+            gatilho = match.group(3)
+            consoante = match.group(4)
+            novo_som = sounds.get(consoante)
+            return f"{gatilho}{novo_som}"  # Mantém o gatilho ANTES!
+
+    pattern = rf"([{target_consonants}])([{triggers}])|([{triggers}])([{target_consonants}])"
+
+    return re.sub(pattern, substituir, word)
+
+def tool_sound_change(word:str, sound_type:str):
+    """
+    Args:
+        word (str): sequence of strings that we want to change;
+        sound_type (str): must insert "surda" or "sonora";
+    Exemple:
+    >>> tool_sound_change(word = "huku", sound_type = "sonora")
+    "hugu"
+    >>> tool_sound_change(word = "zarog", sound_type = "surda")
+    "sarog"
+    """
+    word = corrigir_palavra(list(word))
+    if(any(sound_type in verificar_classe(i) for i in word)):
+        locs:list[int] = [i for i in range(0, len(word)-1)]
+        loc:int = choice(locs)
+        counter:int = 0
+        while not eh_consoante(word[loc]) and sound_type not in verificar_classe(word[loc]):
+            loc = choice(locs)
+            counter+=1
+            if(counter>15):
+                break
+        if(counter<=15):
+            word[loc] = retornar_aproximante(word[loc], sound_type, 2)
+    word = "".join(word)
+    return word
 
 def devoicing(word:str)->str:
     """
-    Change the last voiced letter to unvoiced.
-    Args:
-        word (str): a string sequence, as "bed", "kob", etc.
-    Return:
-        str
-    Exemple:
-    >>> devoicing(word = "lamb")
-    "lamp"
-    >>> devoicing(word = "kaz")
-    "kas"
     """
-    return re.sub(rf"({regex_char_class(global_consonants_str)})$", lambda l:retornar_aproximante(l.group(1), 'surda', 2), word)
+    return tool_sound_change(word, "surda")    
+    
+def lenition(word:str)->str:
+    """
+    """
+    return tool_sound_change(word, "sonora")
+
+def nasalization(word:str)->str:
+    """
+    """
+    consonants = regex_char_class(global_consonants_str)
+    vowels = regex_char_class(global_vowels_str)
+    word = re.sub(rf"[{consonants}](?=[{vowels}])", r"\g<1>n", word)
+    return word
+
+def denasalization(word:str)->str:
+    """
+    """
+    vowels = regex_char_class(global_vowels_str)
+    word = re.sub(rf"(?<=[{vowels}])[mn]", "", word) # explorar melhor possibilidades
+    return word
 
 def iter_regex(effect_list:list, word:str)->str:
     """
@@ -1156,25 +1201,25 @@ def iter_regex(effect_list:list, word:str)->str:
         word = re.sub(f[0], f[1], word)
     return word
 
-def sandhi(word:str)->str:
+def sandhi(word: str) -> str:
     """
+    Aplica regras de sandhi e simplificação de encontros vocálicos e consonantais.
     """
-    def choose(lista:list[str])->str:
-        return choice(lista)
-
-    consonants = regex_char_class(global_consonants_str)
     vowels = regex_char_class(global_vowels_str)
+    
+    # Usamos lambdas para que as escolhas aleatórias aconteçam a CADA substituição realizada
     lista_efeitos = [
-        (r'dg|gg',choose(['g', 'gː'])), (r'bp|pp', choose(['p','pː'])), (r'dt|tt', choose(['t','tː'])),
-        (r'pb|bb', choose(['b','bː'])), (r'dd', choose(['d','dː'])), (r'kk', 'kː'),
-        (r'ts', 'ʦ'), (r'dz', 'ʣ'), (r'dʒ', 'ʤ'), (r'tʃ', 'ʧ'), (r'tɕ', 'ʨ'), (r'dʑ', 'ʥ'), (r'tʂ', 'ꭧ'),
-        (r'bm', choose(['mb', 'b', 'm', 'mː'])), (r'pm', choose(['mp', 'm', 'p', 'mː'])),
-        (r'nŋ|ŋn', 'ŋ'), (r'n(?=[rɾ])', 'nd'), (r'm(?=[rɾ])', 'mb'), (r'ɾɾ|ɾː|rː', 'r'), (r'mm', 'mː'),
-        (r'nn', 'nː'), (r'a[aɐə]|[aɐə]a', choose(['a', 'aː'])), (r'iɪ|ɪi', choose(['ɪ', 'ɪː', 'ij'])),
-        (r'[eə]e|e[eə]', 'eː'), (r'uu', choose(['uː', choose(['wu','uw'])])), (r'oo', 'oː'), 
-        (r'([ɐə])[ɐə]|[ɐə]([ɐə])', r'\g<1>ː'), (r'ɐe|aɪ', choose(['e', 'ɛ'])),
-        (rf'sʊ(?=[{consonants}])', lambda _:choices(population = ["s", "sʊ"], weights = [0.3, 0.7])[0]), #tlvz add em sincope
-        (rf'jɪ(?=[{vowels}])', 'ɪj')
+        # Geminação consonantal e simplificações
+        (r'dg|gg', 'g'), (r'bp|pp', 'p'), (r'dt|tt', 't'), (r'pb|bb', 'b'), (r'dd', 'd'), (r'kk', 'k'), 
+        (r'ts', 'ʦ'), (r'dz', 'ʣ'), (r'dʒ', 'ʤ'), (r'tʃ', 'ʧ'), (r'tɕ', 'ʨ'), (r'dʑ', 'ʥ'),
+        (r'tʂ', 'ꭧ'), 
+        (r'bm', lambda _: choice(['mb', 'b', 'm'])), (r'pm', lambda _: choice(['mp', 'm', 'p'])),
+        (r'nŋ|ŋn', 'ŋ'), 
+        (r'n(?=[rɾ])', lambda _: choice(['nd', 'nt'])), (r'm(?=[rɾ])', 'mb'), (r'ɾɾ|rr', 'r'), 
+        (r'mm', lambda _: choice(['mp', 'm', 'mb'])), (r'nn', lambda _: choice(['n', 'nd', 'nt'])), 
+        (r'a[aɐə]|[aɐə]a', 'a'), (r'iɪ|ɪi', lambda _: choice(['ɪ', 'ij'])), (r'[eə]e|e[eə]', 'e'), (r'oo', 'o'),
+        (r'[ɐə]{2}', lambda m: m.group(0)[0]), (rf'jɪ(?=[{vowels}])', 'ɪj'), (r'hʰ', 'h'),
+        (r'uu|uʊ|ʊu', lambda _: choice(['wu', 'uw'])),
     ]
     word = iter_regex(lista_efeitos, word)
     return word
@@ -1188,6 +1233,36 @@ def coalescencia()->str:
     """
     pass
 
+def perder_ditongo(word:str)->str:
+    """
+    Muda o ditongo de uma palavra, se tornando monotongonal.
+    Exemplo:
+    >>> perder_ditongo("weok")
+    wok
+    >>> perder_ditongo("pawn")
+    pon
+    >>> perder_ditongo("najr")
+    ner
+    """
+    # isso vai precisar ser adaptado sobre as vogais que a lingua em si tem
+    if(re.search(r"[ae|ɐe|aɪ|ɐɪ|ɐj|aj|ɐi]", word)):
+        word = re.sub(rf"(?<=[{global_consonants_str}])[ae|ɐe|aɪ|ɐɪ|ɐj|aj|ɐi](?=[{global_consonants_str}])|(?<=[{global_consonants_str}])[ae|ɐe|aɪ|ɐɪ|ɐj|aj|ɐi]$|^[ae|ɐe|aɪ|ɐɪ|ɐj|aj|ɐi](?=[{global_consonants_str}])",
+            lambda _:choice(['e', 'ɛ', 'ɐ']), word)
+    if(re.search(r"[aw|au|ɐu]", word)):
+        word = re.sub(rf'(?<=[{global_consonants_str}])[aw|au|ɐu](?=[{global_consonants_str}])|(?<=[{global_consonants_str}])[aw|au|ɐu]$|^[aw|au|ɐu](?=[{global_consonants_str}])',
+            lambda _:choice(['o', 'ɔ', 'ʊ']), word)
+    if(re.search(r"[eɪ|ej|ei]", word)):
+        word = re.sub(rf'(?<=[{global_consonants_str}])[eɪ|ej|ei](?=[{global_consonants_str}])|(?<=[{global_consonants_str}])[eɪ|ej|ei]$|^[eɪ|ej|ei](?=[{global_consonants_str}])',
+            lambda _:choice(['e', 'ɪ']),
+            word)
+    if(re.search(r"eo", word)):
+        word = re.sub(rf'(?<=[{global_consonants_str}])eo(?=[{global_consonants_str}])|(?<=[{global_consonants_str}])eo$|^eo(?=[{global_consonants_str}])',
+            choice(['e', 'o']),
+            word)
+    
+    return word
+    
+
 def filtro_fonetico(word:str)->str:
     """
     """
@@ -1195,22 +1270,20 @@ def filtro_fonetico(word:str)->str:
         return choice(lista)
     consonants = regex_char_class(global_consonants_str)
     vowels = regex_char_class(global_vowels_str)
-    non_aspirated = [c for c in global_consonants_str if 'aspirada' not in verificar_classe(c)]
+    non_aspirateble = [c for c in global_consonants_str if any(i not in ['aspirada', 'nasal', 'lateral'] for i in verificar_classe(c))]
     effect_list = [
-        (rf'({regex_char_class("".join(non_aspirated))})(?!ː)h', r'\g<1>ʰ'), (r'mβ', 'mb'),
+        (rf'({regex_char_class("".join(non_aspirateble))})(?!ː)h', r'\g<1>ʰ'), (r'mβ', 'mb'),
         (rf'(?={consonants})wj(?={consonants})', choose(['wɪ', 'ʊj'])),
         (rf'(?={consonants})jw(?={consonants})', choose(['jʊ', 'ɪw'])),
         (rf'(?={consonants})j$', 'ɪ'), (rf'(?={consonants})w$', 'ʊ'),
         (rf'nl(?={consonants})|(?<={consonants})nl', choose(['n', 'l'])),
         (rf'(?<={consonants})wː(?={consonants})', 'ʊː'), (rf'(?<={consonants})w(?={consonants})', 'ʊ'),
-        (rf'(?<={consonants})j(?={consonants})', 'ɪ'), (rf'(?<={consonants})jː(?={consonants})', 'ɪː'),
+        (rf'(?<={consonants})j(?={consonants})', 'ɪ'), (rf'(?<={consonants})jː(?={consonants})', 'ɪ'),
         (rf'(?<={vowels})ɪ|ɪ(?={vowels})', 'j'), (rf'(?<={vowels})ʊ|ʊ(?={vowels})', 'w'),
-        (r'ww', choose(['wʊ', 'wʊ', 'ʊː'])), (r'jj', choose(['ɪj', 'jɪ', 'ɪː'])),
+        (r'ww', choose(['wʊ', 'wʊ', 'ʊː'])), (r'jj', choose(['ɪj', 'jɪ', 'ɪ'])),
         (rf'ʝ$|(?<={consonants})ʝ|ʝ(?={consonants})', 'j'),
     ]
     word = iter_regex(effect_list, word)
-    # for f in effect_list:
-    #     word = re.sub(f[0], f[1], word)
     return word
 
 def implementar_correcoes(word:str)->str:

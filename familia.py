@@ -2,7 +2,7 @@ import tools
 from random import random, choice, randint, choices, shuffle, uniform
 import copy
 import pandas as pd
-from re import sub
+from re import sub, search
 
 class FamiliaLinguistica:
     """
@@ -481,19 +481,21 @@ class FamiliaLinguistica:
             "metatase":tools.metatase,
             "epentese":tools.epenthesis,
             "harmonia":tools.implementar_harmonia,
-            # "eferese":tools.afer
-            # "sincope":tools.sincope
+            "aferese":tools.aphaeresis,
+            # "sincope":tools.sincope,
+            # "protese":tools.prothesis,
             "apocope":tools.apocope,
             "assimilacao":tools.assimilar,
-            # "lenicao":tools.
-            "forticao":tools.fortition,
-            # "palatalizacao":tools.palatalizar,
+            "lenicao":tools.lenition,
+            "forticao":tools.devoicing,
+            "palatalizacao":tools.palatalizar,
             "aspiracao":tools.aspiration,
             # "labializacao":tools.labialization,
             "lambdacismo":tools.lambdacism,
             "rotacismo":tools.rotacism,
             #"reducao_vocal":,
-            # "nasalizacao":tools.nasalization,
+            "nasalizacao":tools.nasalization,
+            "desnasalizacao":tools.denasalization,
             # "fricativizacao":tools.fricativization,
         }
 
@@ -507,7 +509,7 @@ class FamiliaLinguistica:
         conf_sorteada:str = choice(lista_configuracoes)
         c_float = config[conf_sorteada]
         if(conf_sorteada in config_dict.keys()):
-            if(conf_sorteada in ["apocope", "metatase", "assimilacao", "lenicao", "epentese", "harmonia", "sincope", "eferese"]):
+            if(conf_sorteada in ["apocope", "metatase", "assimilacao", "lenicao", "epentese", "sincope", "eferese"]):
                 if(random()<c_float):
                     if(conf_sorteada == "apocope"):
                         word = config_dict[conf_sorteada](silaba_tonica, word)
@@ -516,14 +518,12 @@ class FamiliaLinguistica:
             else:                        
                 if(random()*2 < c_float and c_float>0.45):
                     word = config_dict[conf_sorteada](word) # fazer else, alguns precisam de mais parametros
-        if(random()<0.2):
-            tools.devoicing(word)
-        effects:list[callable] = [tools.esquecer, tools.rotica_probida, tools.filtro_fonetico]
+
+        effects:list[callable] = [tools.esquecer, tools.rotica_probida, tools.sandhi, tools.filtro_fonetico] #,
         for function in effects:
             word = function(word)
+        # word = tools.perder_ditongo(word)
         word = tools.mudancas_w_j(word, self.dialetos_criados[lingua]["sons"]["consoantes"])
-        word = tools.sandhi(word)
-        word = tools.filtro_fonetico(word)
         word = tools.retornar_palavra_atona(word, silaba_tonica)
         return word
 
@@ -837,7 +837,7 @@ class FamiliaLinguistica:
             },
         ]
 
-        iter = 0
+        iter:int = 0
         for r in REGRAS_NEOLOGICAS:
             if(r['CONDICAO'](sig,gen)):
                 especificacoes['significado'],especificacoes['generico'] = r['ACAO'](sig,gen)
@@ -954,6 +954,224 @@ class FamiliaLinguistica:
                 }
                 self.especificacoes_palavra(lingua, max(indices)+1)
 
+    def gerar_regra(self, lingua: str) -> None:
+        """
+        Define uma regra específica da língua/ramo.
+        Leva algumas iterações para a regra acabar, e isso se estende às filhas.
+        """
+        descritivo = self.dialetos_criados[lingua]
+        vogais:list[str] = descritivo["sons"]["vogais"].copy()
+        consoantes:dict[str, list[str]] = {
+            'p':['b', 'k', 'ɸ', 'pʰ'], 't':['d', 's', 'ʦ', 'tʰ'], 'k':['g', 'p', 'x', 'kʰ'], 
+            's':['ʃ', 'z', 't', 'ʦ', 'h'], 'b':['p', 'g', 'β', 'bʰ'], 'd':['t', 'z', 'ʣ'], 
+            'g':['k', 'b', 'ɣ', 'gʰ'], 'z':['s', 'd', 'ʣ', 'ʒ'], 'w':['b', 'β', 'j'], 'h':['k', 's', 'p', 'g'],
+            'x':['x', 'ɣ', 'k', 'h'], 'ɸ':['f', 'p', 'pʰ', 'β'], 'q':['k', 'ʔ', 'h', 'ɢ'], 
+            'ʔ':['', 'h', 'k', 't'], 'β':['w', 'b', 'ɸ', 'v'], 'θ':["θ", "s", "f", "t"],
+            'ð':["d", "z", "v"], 'ʦ':['t', 's', 'ʣ', 'ʧ'], 'ʧ':['t', 'ʤ', 'ʃ', 'ʦ'], 'ʤ':['ʒ', 'd', 'ʧ', 'ʣ']
+        }
+        lenicao: dict[str, str] = {
+            'a':'ɐ', 'i':'ɪ', 'u':'ʊ', 'ɶ':'œ', 'ø':'ə', 'y':'ʏ', 
+            'ʌ':'ɐ', 'ä':'ɐ', 'ɤ':'ʌ', 'ɞ':'ɵ', 'ɑ':'ɐ', 'æ':'ɐ', 
+            'ʉ':'ʊ', 'ɯ':'ʊ',
+        }
+        def selecionar(tipo: str) -> str:
+            vogais.extend([lenicao.get(v) for v in vogais if v in lenicao.keys() and tools.eh_vogal(v)])
+            
+            geral: list[str] = vogais if (tipo.upper() == "V") else consoantes
+
+            if(tipo == "C"):
+                letras_slc = list(geral.keys())
+                shuffle(letras_slc)
+                consoantes_lingua = descritivo["sons"]["consoantes"]
+                for letra in letras_slc:
+                    if(letra in consoantes_lingua):
+                        variacoes:list[str] = consoantes.get(letra)
+                        for va in variacoes:
+                            if(va in consoantes_lingua):
+                                return va
+                
+            else:
+                som_id = randint(0, len(geral)-1)
+                return "".join(geral[som_id])
+            return choice(vogais.keys() if tipo == "V" else consoantes.keys())
+
+        def estrutura():
+            estruturas: list[str] = ["CVC", "VCV", "VC", "CV", "CC", "VV", "V", "C"]
+            estrutura_slc: str = choice(estruturas)
+            psb_slc = None
+
+            if estrutura_slc == "CVC":
+                c1 = selecionar("C")
+                c2 = selecionar("C")
+                v1 = selecionar("V")
+                v2 = selecionar("V")
+                possibilidades = [
+                    (rf"(?<=[{c1}])([{v1}](?=[{c2}]))", rf"{v2}"),
+                    (rf"^[{c1}]([{v1}](?=[{c2}]))", rf"{v2}"),
+                    (rf"[{c1}]([{v1}](?=[{c2}]))$", rf"{v2}"),
+                ]
+                psb_slc = choice(possibilidades)
+                
+            elif estrutura_slc == "VCV":
+                v1 = selecionar("V")
+                v2 = selecionar("V")
+                c1 = selecionar("C")
+                c2 = selecionar("C")
+                possibilidades = [
+                    # (rf"(?<=[{v1}])([{c1}](?=[{v2}]))", rf"{c2}"),
+                    (rf"^[{v1}]([{c1}](?=[{v2}]))", rf"{c2}"),
+                    (rf"[{v1}]([{c1}](?=[{v2}]))$", rf"{c2}"),
+                    (rf"(?<=[{v1}])([{c1}](?=[{v2}]))", rf"{v2}{v1}"),
+                    (rf"^([{v1}])([{c1}](?=[{v2}]))", rf"{v2}{v1}"),
+                    (rf"([{v1}])([{c1}](?=[{v2}]))$", rf"{v2}{v1}")
+                ]
+                psb_slc = choice(possibilidades)
+                
+            elif estrutura_slc == "VC":
+                v = selecionar("V")
+                c1 = selecionar("C")
+                c2 = selecionar("C")
+                semi_vogais = list("wj")
+                semi_slc = choice(semi_vogais)
+                possibilidades = [
+                    (rf"(?<=[{v}])([{c1}])", rf"{c2}"),
+                    (rf"^[{v}]([{c1}])", rf"{c2}"),
+                    (rf"[{v}]([{c1}])$", rf"{c2}"),
+                    (rf"(?<=[{v}])([{c1}])", rf"{semi_slc}{c1}"),
+                    (rf"^[{v}]([{c1}])", rf"{semi_slc}{c1}"),
+                    (rf"[{v}]([{c1}])$", rf"{semi_slc}{c1}"),
+                    (rf"(?<=[{v}])([{c1}])", lambda _: ""),
+                ]
+                psb_slc = choice(possibilidades)
+                
+            elif estrutura_slc == "CV":
+                c1 = selecionar("C")
+                v1 = selecionar("V")
+                v2 = selecionar("V")
+                possibilidades = [
+                    (rf"(?<=[{c1}])([{v1}])", rf"{v2}"),
+                    (rf"^[{c1}]([{v1}])", rf"{v2}"),
+                    (rf"[{c1}]([{v1}])$", rf"{v2}"),
+                ]
+                psb_slc = choice(possibilidades)
+                
+            elif estrutura_slc == "VV":
+                v1 = selecionar("V")
+                v2 = selecionar("V")
+                v3 = selecionar("V")
+                semi_vogais = list("wj")
+                semi_slc = choice(semi_vogais)
+                possibilidades = [
+                    (rf"(?<=[{v1}])([{v2}])", rf"{v3}"),
+                    (rf"^[{v1}]([{v2}])", rf"{v3}"),
+                    (rf"[{v1}]([{v2}])$", rf"{v3}"),
+                    (rf"(?<=[{v1}])([{v2}])", rf"{semi_slc}\g<1>"),
+                    (rf"^[{v1}]([{v2}])", rf"{semi_slc}\g<1>"),
+                    (rf"[{v1}]([{v2}])$", rf"{semi_slc}\g<1>"),
+                ]
+                psb_slc = choice(possibilidades)
+                
+            elif estrutura_slc == "CC":
+                c1 = selecionar("C")
+                c2 = selecionar("C")
+                c3 = selecionar("C")
+                possibilidades = [
+                    # 1. Substituição de c2 por c3
+                    (rf"(?<=[{c1}])([{c2}])", rf"{c3}"),
+                    (rf"^[{c1}]([{c2}])", rf"{c3}"),
+                    (rf"[{c1}]([{c2}])$", rf"{c3}"),
+
+                    # 2. Apagamento / Síncope de c2
+                    (rf"(?<=[{c1}])([{c2}])", lambda _: ""),
+                    (rf"^[{c1}]([{c2}])", lambda _: ""),
+                    (rf"[{c1}]([{c2}])$", lambda _: ""),
+
+                    # 3. Metátese (Inversão de posição entre c1 e c2)
+                    (rf"([{c1}])([{c2}])", lambda m: f"{m.group(2)}{m.group(1)}"),
+                    (rf"^([{c1}])([{c2}])", lambda m: f"{m.group(2)}{m.group(1)}"),
+                    (rf"([{c1}])([{c2}])$", lambda m: f"{m.group(2)}{m.group(1)}"),
+
+                    # 4. Modificação em c2 (Altera c2 dependendo da sonoridade de c2)
+                    (rf"^[{c1}]([{c2}])", lambda m: 
+                        tools.retornar_aproximante(m.group(1), "sonora", 2) 
+                        if "surda" in tools.verificar_classe(c2)
+                        else tools.retornar_aproximante(m.group(1), "surda", 2)
+                    ),
+                    (rf"[{c1}]([{c2}])$", lambda m: 
+                        tools.retornar_aproximante(m.group(1), "sonora", 2) 
+                        if "surda" in tools.verificar_classe(c2)
+                        else tools.retornar_aproximante(m.group(1), "surda", 2)
+                    ),
+
+                    # 5. Modificação em c1 (Altera c1 dependendo da sonoridade de c1)
+                    (rf"^([{c1}])[{c2}]", lambda m: 
+                        tools.retornar_aproximante(m.group(1), "sonora", 2) 
+                        if "surda" in tools.verificar_classe(c1)
+                        else tools.retornar_aproximante(m.group(1), "surda", 2)
+                    ),
+                    (rf"([{c1}])[{c2}]$", lambda m: 
+                        tools.retornar_aproximante(m.group(1), "sonora", 2) 
+                        if "surda" in tools.verificar_classe(c1)
+                        else tools.retornar_aproximante(m.group(1), "surda", 2)
+                    ),
+                ]
+                psb_slc = choice(possibilidades)
+                
+            elif estrutura_slc == "V":
+                v1 = selecionar("V")
+                v2 = selecionar("V")
+                possibilidades = [
+                    (rf"^([{v1}])", rf"{v2}"),
+                    (rf"([{v1}])$", rf"{v2}"),
+                    (rf"^([{v1}])", r"h\g<1>"),
+                    (rf"([{v1}])$", r"\g<1>h"),
+                ]
+                psb_slc = choice(possibilidades)
+                
+            else:
+                c1 = selecionar("C")
+                c2 = selecionar("C")
+                possibilidades = [
+                    (rf"^([{c1}])", rf"{c2}"),
+                    (rf"[{c1}]$", rf"{c2}"),
+                    (rf"^([{c1}])", lambda m: tools.retornar_aproximante(m.group(1), "sonora", 2) 
+                        if("surda" in tools.verificar_classe(c1)) 
+                        else tools.retornar_aproximante(m.group(1), "surda", 2)
+                    ),
+                    (rf"([{c1}])$", lambda m: tools.retornar_aproximante(m.group(1), "sonora", 2) 
+                        if("surda" in tools.verificar_classe(c1))
+                        else tools.retornar_aproximante(m.group(1), "surda", 2)
+                    ),
+                    (rf"^([{c1}])|([{c1}])$", lambda m: tools.retornar_aproximante(m.group(1), "sonora", 2) 
+                        if("surda" in tools.verificar_classe(c1))
+                        else tools.retornar_aproximante(m.group(1), "surda", 2)
+                    ),
+                ]
+                psb_slc = choice(possibilidades)
+                
+            return psb_slc
+
+        gramatica = descritivo["gramatica"]
+        if "a_regra" not in gramatica:
+            gramatica["a_regra"] = {}
+        
+        ultima_regra = max(gramatica["a_regra"].keys()) + 1 if gramatica["a_regra"] else 0
+        estrutura_slc = estrutura()
+        # print(estrutura_slc)
+        gramatica["a_regra"][ultima_regra] = estrutura_slc
+
+    def efetuar_regra(self, lingua:str, word:str)->str:
+        """
+        """
+        descritivo = self.dialetos_criados[lingua]
+        regra_comando = descritivo["gramatica"]["a_regra"]
+        for rc in regra_comando.keys():
+            comando_slc = regra_comando.get(rc)
+            # print(f"Antes: {word}")
+            word = sub(comando_slc[0], comando_slc[1], word)
+            # print(f"Depois: {word}")
+        return word
+
     def assimilar_gramatica(self, sistema_linguistico:dict, gramatica:str)->None:
         """
         RESUMO
@@ -967,7 +1185,7 @@ class FamiliaLinguistica:
         >>>assimilar_gramatica(class.dialetos_criados, "pronomes")
         """
         # deletar declinações iguais
-        if(self.qual_a_regra('original', gramatica) != "nao_contem"):
+        if(self.qual_a_regra('original') != "nao_contem"):
             # print("É um dicionario")
             for dialeto in sistema_linguistico.keys():
                 if(dialeto!="original"):
@@ -1037,33 +1255,30 @@ class FamiliaLinguistica:
         Considerando a ideia que palavras cotidianas que estão se gramaticalizando
             sofrem muito mais erosão que as demais palavras.
         """
-        def por_efeito(lingua:str, palavra:str, silaba_tonica)->str:
-            vogais:str = "".join(list(tools.regra_fonetica['vogal'].keys()))
-            lista_efeitos = [
-                (r'p$', 'b'), (r'k$', 'g'), (r't$', 'd'), (r'[hmn]$', ''),
-                (r's$', 'z'), (rf'[bdg]$|(?<=[{vogais}])[bdg]|[bdg](?=[{vogais}])', ''),
-                (r'[aäʌɑæ]', 'ɐ'), (r'[ie]', 'ɪ'), (r'[ɐɪʊə]$', ''),
-                (r'[u]', 'ʊ'), (r'[øɶ]', 'œ'), (r'[ø]', 'ə'), (r'[y]', 'ʏ'),
-                (r'[ɞ]', 'ɵ'), (r'[ɤ]', 'ʌ'), (rf'(?<=[{vogais}])ː', '')
-            ]
-            efeito = choice(lista_efeitos)
-            palavra = "".join(palavra)
-            palavra = sub(efeito[0], efeito[1], palavra)
+        def por_efeito(lingua:str, palavra:str, silaba_tonica:str, regra:bool)->str:
+            if(regra):
+                palavra = self.efetuar_regra(lingua, palavra)
             palavra = tools.corrigir_palavra(list(palavra))
             palavra = self.implementar_efeitos(lingua, palavra)
-            palavra = tools.sandhi(palavra)
             palavra = tools.retornar_palavra_atona(palavra, silaba_tonica)
+            palavra = "".join(palavra)
             return palavra
 
         for nome in self.nomes():
             if(nome not in self.linguas_nao_mutaveis):
                 gramatica = self.dialetos_criados[nome]['gramatica']
+                regra = "a_regra" in gramatica.keys()
                 for assunto in gramatica.keys():
-                    if(assunto not in ['estrutura', 'silaba_tonica', 'posicao']):
+                    if(assunto not in ['estrutura', 'silaba_tonica', 'posicao', 'a_regra']):
                         # print(assunto)
                         for pessoa in gramatica[assunto]:
                             if(len(gramatica[assunto][pessoa])>1):
-                                gramatica[assunto][pessoa] = por_efeito(nome, gramatica[assunto][pessoa], gramatica['silaba_tonica'])
+                                gramatica[assunto][pessoa] = por_efeito(
+                                    nome,
+                                    gramatica[assunto][pessoa],
+                                    gramatica['silaba_tonica'], 
+                                    regra
+                                )
 
     def adaptar_palavras(self)->None:
         """
@@ -1077,12 +1292,15 @@ class FamiliaLinguistica:
 
             tipo = "vogais" if(tools.eh_vogal(som_antigo)) else "consoantes"
             for novo_som in self.dialetos_criados[lingua]['sons'][tipo]:
-                if(novo_som != som_antigo):
-                    similaridade:float = tools.semelhanca_entre_sons(som_antigo[0], novo_som[0])
-                    proximos:list[str] = tools.regra_fonetica["vogal" if tipo == "vogais" else "consoante"][som_antigo[0]]["possibilidades"]
-                    if(similaridade>=0.5 and novo_som in proximos):
-                        som_selecionado.append(novo_som)
-                        chances.append(1/6 if(len(som_selecionado)==1) else round(chances[-1]/6, 4))
+                if(novo_som != som_antigo and random()>0.9):
+                    try:
+                        similaridade:float = tools.semelhanca_entre_sons(som_antigo[0], novo_som[0])
+                        proximos:list[str] = tools.regra_fonetica["vogal" if tipo == "vogais" else "consoante"][som_antigo[0]]["possibilidades"]
+                        if(similaridade>=0.5 and novo_som in proximos):
+                            som_selecionado.append(novo_som)
+                            chances.append(1/6 if(len(som_selecionado)==1) else round(chances[-1]/6, 4))
+                    except:
+                        print(som_antigo)
             som_selecionado.insert(0, som_antigo)
             chances.insert(0, 1.0)
             return choices(population = som_selecionado, weights = chances)[0]
@@ -1101,32 +1319,41 @@ class FamiliaLinguistica:
             if(nome not in self.linguas_nao_mutaveis):
                 descritivo = linguas[nome]
                 dicionario = descritivo["lingua"]
+                if(self.iteracoes % 2 == 0 and random()>0.4):
+                    self.gerar_regra(nome)
+
                 # silaba_tonica:str = descritivo["gramatica"]["silaba_tonica"]
                 for i in dicionario.keys():
                     palavra = dicionario[i]["palavra"]
+                    if("a_regra" in descritivo["gramatica"] and random()>0.4):
+                        palavra = self.efetuar_regra(nome, palavra)
                     palavra = ajustar_palavra(nome, palavra)
                     dicionario[i]["palavra"] = self.implementar_efeitos(nome, palavra)
                 self.gerar_nova_palavra(nome, 100)
+
+                if("a_regra" in descritivo["gramatica"] and random()>0.95):
+                    a_regra = descritivo["gramatica"]["a_regra"]
+                    if(len(a_regra.keys())>1):
+                        regra_id = choice(list(a_regra.keys()))
+                        del a_regra[regra_id] 
     
     def desenvolver_filhas(self, loops:int)->None: # iteracoes
         """
         classe -> precisa da variável proveniente da classe FamiliaLinguistica
         """
-        for i in range(loops):
+        ramo = self.dialetos_criados
+        gramatica = ramo['original']['gramatica']
+        for _ in range(loops):
             self._desenvolver_acervo_dialeto_()
-            self.adaptar_palavras()
-            # esse if eh mais para dar algum tempo em que os casos gramaticais se fundem
-            """
-            if(self.iteracoes%3==0):
-                casos:list[str] = ["casos", "genero", "conjugacao"]
-                for caso in casos:
-                    # print(caso)
-                    self.assimilar_gramatica(self.dialetos_criados, caso)
-            """
-            if(self.iteracoes>=2 and "pronomes" not in self.dialetos_criados['original']['gramatica'].keys()):
+            self.adaptar_palavras()            
+            if(self.iteracoes>=2 and "pronomes" not in gramatica.keys()):
                 self.gerar_pronomes()
-
-            if(any(i in ['pronomes', 'conjugacao', 'afixos'] for i in self.dialetos_criados['original']['gramatica'].keys())):
+            if(any(i in ['pronomes', 'conjugacao', 'afixos'] for i in gramatica.keys())):
+                if(self.iteracoes%3==0):
+                    casos:list[str] = ["pronomes", "afixos"]
+                    for caso in casos:
+                        # print(caso)
+                        self.assimilar_gramatica(ramo, caso)
                 self.lenicao_gramatical()
             self._perder_significado_()
             self._ver_sons_dialetos()
@@ -1160,7 +1387,7 @@ class FamiliaLinguistica:
         EXEMPLO
         >>>
         """
-        regra:str = self.qual_a_regra(nomes_dialetos[numero], "afixos")
+        regra:str = self.qual_a_regra(nomes_dialetos[numero])
         substantivo_escolhido:str = choice(substantivos)
         significado:str = significados_substantivos[substantivos.index(substantivo_escolhido)]
         if(regra!="nao_contem"):
@@ -1197,7 +1424,7 @@ class FamiliaLinguistica:
         EXEMPLO
         >>>class._verbo_(nomes_dialetos = "Original", verbos = "")
         """
-        regra:dict = self.qual_a_regra(nomes_dialetos[numero], "conjugacao")
+        regra:dict = self.qual_a_regra(nomes_dialetos[numero])
         verbo_escolhido:str = choice(verbos)
         significado:str = significados_verbos[verbos.index(verbo_escolhido)]
         verbo:str; significado:str
@@ -1278,7 +1505,7 @@ class FamiliaLinguistica:
                 if(i!=j and j!= "original"):
                     print(f"Intelegibilidade entre {i} e {j}: {self._inteligibilidade_(self.dialetos_criados[i]['lingua'], self.dialetos_criados[j]['lingua'])}")
 
-    def qual_a_regra(self, lingua:str, classe_gramatical:str)->dict[str, list[str]]|str:
+    def qual_a_regra(self, lingua:str)->dict[str, list[str]]|str:
         """
         FUNCAO
         Verifica se a classe_gramatical selecionada é posposição, preposição ou se não existe.
@@ -1291,7 +1518,7 @@ class FamiliaLinguistica:
         >>>class.qual_a_regra(lingua = "okt", "conjugacao")
         "nao_contem"
         """
-        regra:dict|str = self.dialetos_criados[lingua]['gramatica'][classe_gramatical]
+        regra:dict|str = self.dialetos_criados[lingua]['gramatica']["posicao"]
         return regra["regra"] if isinstance(regra, dict) else regra
 
     def sortear_pronome(self, lingua:str="Original")->str:
@@ -1751,7 +1978,7 @@ class FamiliaLinguistica:
         for i in dialetos.keys():
             print("="*20, f"{"Língua" if(i=='original') else complemento} {i}", "="*20)
             for gramatica in dialetos[i]["gramatica"]:
-                if(isinstance(dialetos[i]["gramatica"][gramatica], dict)):
+                if(isinstance(dialetos[i]["gramatica"][gramatica], dict) and gramatica != "a_regra"):
                     if(topico=="todos"):
                         print(":"*10, f"{gramatica}")
                         for conteudo in dialetos[i]["gramatica"][gramatica]:
@@ -1782,22 +2009,34 @@ class FamiliaLinguistica:
             for g in gramatica.keys():
                 if(gramatica[g]!=regra):
                     particula:list[str] = []
+                    palavra = lingua_dict['lingua'][indice_sorteado]['palavra']
                     if(modelo == "tabela"):
                         print(f"{g}", end=" | ")
                         if(regra=='posposicao'):
                             print(f"-{"".join(gramatica[g])}", end=" | ")
-                            print("".join(lingua_dict['lingua'][indice_sorteado]['palavra']+gramatica[g]))
+                            print(self.efetuar_regra(lingua, "".join(palavra+gramatica[g])) 
+                                  if("a_regra" in lingua_dict["gramatica"].keys()) 
+                                  else "".join(palavra+gramatica[g]))
                         elif(regra == 'preposicao'):
                             print(f'{gramatica[g]}-', end=" | ")
-                            print("".join(gramatica[g]+lingua_dict['lingua'][indice_sorteado]['palavra']))
+                            print(
+                                self.efetuar_regra(lingua, "".join(gramatica[g]+palavra))
+                                if("a_regra" in lingua_dict["gramatica"].keys()) else "".join(gramatica[g]+palavra)
+                            )
                     else:
                         particula.append(f"{g}")
                         if(regra=='posposicao'):
                             particula.append(f"-{"".join(gramatica[g])}")
-                            particula.append("".join(lingua_dict['lingua'][indice_sorteado]['palavra']+gramatica[g]))
+                            print(self.efetuar_regra(lingua, "".join(palavra+gramatica[g])) 
+                                if("a_regra" in lingua_dict["gramatica"].keys()) 
+                                else "".join(palavra+gramatica[g])
+                            )
                         elif(regra == 'preposicao'):
                             particula.append(f'{gramatica[g]}-')
-                            particula.append("".join(gramatica[g]+lingua_dict['lingua'][indice_sorteado]['palavra']))
+                            print(
+                                self.efetuar_regra(lingua, "".join(gramatica[g]+palavra))
+                                if("a_regra" in lingua_dict["gramatica"].keys()) else "".join(gramatica[g]+palavra)
+                            )
                         tabela.append(particula)
         if(modelo!="tabela"):
             df = pd.DataFrame(data=tabela[1:], columns=tabela[0])
@@ -2141,6 +2380,8 @@ class FamiliaLinguistica:
                     palavra = correspondentes[i]["palavra"]
                     palavra = tools.sandhi(palavra)
                     palavra = tools.retornar_palavra_atona(palavra, silaba_tonica)
+                    if("a_regra" in gramatica.keys()):
+                        palavra = self.efetuar_regra(lingua, palavra)
                     if(transcricao_fonetica):
                         palavra = self.inserir_sinal_tonico(palavra, silaba_tonica, 'lista')
                     print("="*50)
@@ -2151,12 +2392,12 @@ class FamiliaLinguistica:
             elif(isinstance(casos, dict)):
                 regra = gramatica["posicao"]
                 for i in list(correspondentes.keys()):
-                    gramatica = correspondentes[i]['classe']
+                    g_classe = correspondentes[i]['classe']
                     outros_significados = list(correspondentes[i]['significado'])
                     outros_significados.pop(outros_significados.index(encontrar_palavra))
                     correspondente = self.inserir_sinal_tonico(correspondentes[i]["palavra"], silaba_tonica, 'lista')
                     print("="*50)
-                    print(f"| significado: {encontrar_palavra}\n\t| gramatica: {gramatica}\n\t| palavra: /{"".join(correspondente)}/\
+                    print(f"| significado: {encontrar_palavra}\n\t| gramatica: {g_classe}\n\t| palavra: /{"".join(correspondente)}/\
                     \n\t| posicao: {regra}\n\tCasos gramaticais:")
                     for c in casos:
                         if(c!="regra"):
@@ -2172,6 +2413,8 @@ class FamiliaLinguistica:
                                 palavra = tools.filtro_fonetico(palavra)
                             palavra = tools.sandhi(palavra)
                             palavra = tools.retornar_palavra_atona(palavra, silaba_tonica)
+                            if("a_regra" in gramatica.keys()):
+                                palavra = self.efetuar_regra(lingua, palavra)
                             if(transcricao_fonetica):
                                 palavra = self.inserir_sinal_tonico(palavra, silaba_tonica, 'lista')
                             print(f"\t\t| {c}: /{"".join(palavra)}/")
@@ -2353,6 +2596,92 @@ class FamiliaLinguistica:
                 self.montar_frase(lingua, True, True)
                 print("")
                 print("="*50)
+
+    def gerar_nome_lugar(self, lingua:str = "original")->None:
+        sub_sorteado:str = choice(["terra", "enseada", "rio", "campo", "casa", "local", "agua"])
+        subs_um:str = self.retornar_palavra(lingua, sub_sorteado)
+        descritivo = self.dialetos_criados[lingua]
+        dicionario = descritivo["lingua"]
+        descricao_um:dict[str, str|float|int|list[str]] = dicionario[self.sortear_indice(lingua, "adjetivo")]
+        adj_um:str = descricao_um["palavra"]
+        significados:str = f"{sub_sorteado} {descricao_um["significado"][0]}"
+        filtro = tools.filtro_fonetico(subs_um + adj_um)
+        sandhi = tools.sandhi(filtro)
+        print(tools.retornar_palavra_atona(sandhi, descritivo["gramatica"]["silaba_tonica"]))
+        print(significados)
+
+    def gerar_outro_lugar(self, lingua:str = "original", genitive:bool = False, locativo:bool = False)->None:
+        """
+        """
+        ramo = self.dialetos_criados[lingua]
+        gramatica = ramo["gramatica"]
+        silaba_tonica = gramatica["silaba_tonica"]
+        afixos = gramatica["afixos"]
+    
+        sub_descricao:dict[str, str|float|int|list[str]] = ramo["lingua"][self.sortear_indice(lingua, "substantivo")]
+        sub_dois:str = sub_descricao["palavra"]
+
+        sortear_adj:float = random()>0.5
+        if(sortear_adj):
+            adj_sorteado:str = choice(["muito", "pouco", "grande", "pequeno", "alto", "longo", "fundo", "pesado", "firme"])
+            adj_um:str = self.retornar_palavra(lingua, adj_sorteado)
+            filtro = tools.filtro_fonetico(sub_dois + adj_um)
+            sandhi = tools.regra_de_sandhi(filtro, len(sub_dois)-1, len(sub_dois))
+            nova_palavra = sandhi
+        else:
+            nova_palavra = sub_dois
+
+        if(genitive):
+            gen_flex = afixos["genitivo"]
+            if(silaba_tonica == "posposicao"):
+                palavra_genitiva = nova_palavra + gen_flex
+                nova_palavra = tools.regra_de_sandhi(palavra_genitiva, len(nova_palavra)-1, len(nova_palavra))
+            else:
+                palavra_genitiva = gen_flex + nova_palavra
+                nova_palavra = tools.regra_de_sandhi(palavra_genitiva, len(gen_flex)-1, len(gen_flex))
+
+        if(locativo):
+            sub_sorteado = "lugar"
+            sub_um:str = afixos["locativo"]
+            sub_um = tools.sandhi(nova_palavra + sub_um) if(silaba_tonica == "posposicao") else tools.sandhi(sub_um + nova_palavra)
+            print(sub_um)
+            print(f'Lit.: "{sub_sorteado} de {sub_descricao["significado"][0]} {adj_sorteado}'
+                if(sortear_adj) else f'Lit.: "{sub_sorteado} de {sub_descricao["significado"][0]}"')
+        else:
+            sub_sorteado:str = choice(["terra", "enseada", "rio", "campo", "casa", "local", "agua"])
+            sub_um:str = self.retornar_palavra(lingua, sub_sorteado)
+            print(f"{nova_palavra} {sub_um}" if(genitive) else f"{sub_um} {nova_palavra}")
+            print(f'Lit.: "{sub_sorteado} do {sub_descricao["significado"][0]} {adj_sorteado}'
+                if(sortear_adj) else f'Lit.: "{sub_sorteado} do {sub_descricao["significado"][0]}"')
+
+    def encontrar_palavras_som(self, lingua:str, som:str, mostrar_significado:bool = False, posicao:str = "qualquer")->list[str]|None:
+        """
+        Args:
+            posicao (str): Se a sequência de caractéres é "inicio" "fim" ou "qualquer"
+        Exemple:
+            >>>
+        """
+        procurar:dict[str, bool] = {
+        "inicio" : rf"^{som}", "fim" : rf"{som}$", "qualquer" : rf"{som}",
+        }
+        dicionario = self.dialetos_criados[lingua]["lingua"]
+        words_found:list[str] = []
+        if(mostrar_significado):
+            meanings:dict[str, str] = {}
+        for d in dicionario.keys():
+            word:str = dicionario[d]["palavra"]
+            if(search(procurar.get(posicao), word)):
+                if(mostrar_significado):
+                    meanings[dicionario[d]["significado"][0]] = word
+                else:
+                    words_found.append(word)
+
+        if(mostrar_significado):
+            sorted_list:list[str] = sorted(meanings.keys())
+            for s in sorted_list:
+                print(f"{s} : {meanings[s]}")
+            return None
+        return words_found
     
     def guardar_linguas(self)->None:
         linguas = self.dialetos_criados

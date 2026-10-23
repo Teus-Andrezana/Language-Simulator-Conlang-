@@ -155,23 +155,23 @@
   "consoante": {
     "p": {
       "classe": ["bilabial", "oclusiva", "surda"],
-      "possibilidades": ["p", "pʰ", "b"],
-      "chances": [60, 10, 30]
+      "possibilidades": ["p", "ɸ", "pʰ"],
+      "chances": [70, 20, 10]
     },
     "b": {
       "classe": ["bilabial", "oclusiva", "sonora"],
-      "possibilidades": ["b", "β", "p"],
+      "possibilidades": ["b", "β", "bʰ"],
       "chances": [60, 10, 30]
     },
     "t": {
       "classe": ["alveolar", "oclusiva", "surda"],
-      "possibilidades": ["t", "d", "tʰ", "ʦ", "ʔ"],
+      "possibilidades": ["t", "tʰ", "ʦ", "ʔ", "θ"],
       "chances": [60, 10, 10, 10, 10]
     },
     "d": {
       "classe": ["alveolar", "oclusiva", "sonora"],
-      "possibilidades": ["d", "t", "dʰ", "ʣ", "ɾ"],
-      "chances": [60, 10, 10, 10, 10]
+      "possibilidades": ["d", "dʰ", "ʣ", "ð"],
+      "chances": [70, 10, 10, 10]
     },
     "c": {
       "classe": ["palatal", "oclusiva", "surda"],
@@ -185,13 +185,13 @@
     },
     "k": {
       "classe": ["velar", "oclusiva", "surda"],
-      "possibilidades": ["k", "kʰ", "g", "x"],
-      "chances": [80, 5, 10, 5]
+      "possibilidades": ["k", "kʰ"],
+      "chances": [90, 10]
     },
     "g": {
       "classe": ["velar", "oclusiva", "sonora"],
-      "possibilidades": ["g", "ɣ", "k", "gʰ"],
-      "chances": [70, 10, 10, 10]
+      "possibilidades": ["g", "gʰ"],
+      "chances": [90, 10]
     },
     "ʔ": {
       "classe": ["glotal", "oclusiva", "surda"],
@@ -200,23 +200,23 @@
     },
     "q": {
       "classe": ["uvular", "oclusiva", "surda"],
-      "possibilidades": ["q", "qʰ", "k", "ʔ", "ɢ"],
-      "chances": [60, 10, 10, 10, 10]
+      "possibilidades": ["q", "qʰ", "k"],
+      "chances": [75, 10, 10]
     },
     "ɢ": {
       "classe": ["uvular", "oclusiva", "sonora"],
-      "possibilidades": ["g", "ʁ", "ɢ", "ɢʰ", "q"],
-      "chances": [60, 10, 10, 10, 10]
+      "possibilidades": ["ɢ", "ɢʰ"],
+      "chances": [80, 10]
     },
     "ɸ": {
       "classe": ["bilabial", "fricativa", "surda"],
-      "possibilidades": ["ɸ", "f", "pʰ", "w"],
-      "chances": [80, 10, 10, 5]
+      "possibilidades": ["ɸ", "f", "pʰ"],
+      "chances": [80, 10, 10]
     },
     "β": {
       "classe": ["bilabial", "fricativa", "sonora"],
-      "possibilidades": ["β", "v", "b", "w", "ɸ"],
-      "chances": [60, 10, 10, 10, 10]
+      "possibilidades": ["β", "v", "b", "w"],
+      "chances": [75, 10, 10, 5]
     },
     "ʋ": {
       "classe": ["labiodental", "aproximante", "sonora"],
@@ -265,13 +265,13 @@
     },
     "θ": {
       "classe": ["dental", "fricativa", "surda"],
-      "possibilidades": ["θ", "s", "f", "t", "ð"],
-      "chances": [60, 10, 10, 10, 10]
+      "possibilidades": ["θ", "s", "f", "t"],
+      "chances": [70, 10, 10, 10]
     },
     "ð": {
       "classe": ["dental", "fricativa", "sonora"],
-      "possibilidades": ["ð", "d", "z", "v", "θ"],
-      "chances": [60, 10, 10, 10, 10]
+      "possibilidades": ["ð", "d", "z", "v"],
+      "chances": [70, 10, 10, 10]
     },
     "s": {
       "classe": ["alveolar", "fricativa", "surda"],
@@ -280,8 +280,8 @@
     },
     "z": {
       "classe": ["alveolar", "fricativa", "sonora"],
-      "possibilidades": ["z", "s", "ð", "ʣ"],
-      "chances": [70, 10, 10, 10]
+      "possibilidades": ["z", "ð", "ʣ"],
+      "chances": [80, 10, 10]
     },
     "ʃ": {
       "classe": ["pos-alveolar", "fricativa", "surda"],
@@ -1165,16 +1165,5 @@
       "chances": [70, 60, 50, 30, 10]
     }
   },
-  "estrutura": [
-    "CVC",
-    "VCV",
-    "VCVC",
-    "CVCV",
-    "VCVCV",
-    "CVCVC",
-    "VCVCVC",
-    "CVCVCV",
-    "VCVCVCV",
-    "CVCVCVC"
-  ]
+  "estrutura": ["VCVC", "CVCV", "VCVCV", "CVCVC", "CVCCV", "VCCVC"]
 }
