@@ -281,32 +281,34 @@ class ProtoLingua:
         # print("Criar Palavra")
         consoantes:list[str] = self.proto_consoantes.copy()
         vogais:list[str] = self.proto_vogais.copy()
-        estrutura:str = self.gerar_estrutura_palavra()
+        sequencia:str = self.gerar_estrutura_palavra()
 
-        num_consoantes:int = self.conta_vogal_consoante(estrutura, "C")
-        num_vogais:int = self.conta_vogal_consoante(estrutura, "V")
-        consoantes:list[str] = self.hierarquia_consoantes(num_consoantes, consoantes)
-        vogais:list[str] = self.harmonia_vocalica(num_vogais, vogais)
-        ultima_consoante_inserida:str = '' #para evitar sequencia de consoantes
-        vezes_ultima_adicionada:int = 0
-        word:str = ""
-        for _, letra in enumerate(estrutura):
-            if letra == 'C':
-                if(consoantes[0] != ultima_consoante_inserida):
-                    ultima_consoante_inserida = consoantes[0]
-                    vezes_ultima_adicionada = 0
-                    word+=consoantes.pop(0)
-                    # word.append(consoantes.pop(0))
-                else:
-                    vezes_ultima_adicionada+=1
-                    if(vezes_ultima_adicionada>2):
-                        consoante = choice(consoantes)
-                        word+=consoante
-                        # word.append(consoante)
+        # num_consoantes:int = self.conta_vogal_consoante(sequencia, "C")
+        # num_vogais:int = self.conta_vogal_consoante(sequencia, "V")
+        # consoantes:list[str] = self.hierarquia_consoantes(num_consoantes, consoantes)
+        # vogais:list[str] = self.harmonia_vocalica(num_vogais, vogais)
+        # ultima_consoante_inserida:str = '' #para evitar sequencia de consoantes
+        # vezes_ultima_adicionada:int = 0
+        # word:str = ""
+        # for _, letra in enumerate(sequencia):
+        #     if letra == 'C':
+        #         if(consoantes[0] != ultima_consoante_inserida):
+        #             ultima_consoante_inserida = consoantes[0]
+        #             vezes_ultima_adicionada = 0
+        #             word+=consoantes.pop(0)
+        #             # word.append(consoantes.pop(0))
+        #         else:
+        #             vezes_ultima_adicionada+=1
+        #             if(vezes_ultima_adicionada>2):
+        #                 consoante = choice(consoantes)
+        #                 word+=consoante
+        #                 # word.append(consoante)
 
-            else:
-                # word.append(vogais.pop(0))
-                word+=vogais.pop(0)
+        #     else:
+        #         # word.append(vogais.pop(0))
+        #         word+=vogais.pop(0)
+        # sequencia:str = choice(tools.regra_fonetica["estrutura"])
+        word:str = "".join([choice(vogais if(s=="V") else consoantes) for s in sequencia])
         word = self.implementar_efeitos(word)
         return word
 

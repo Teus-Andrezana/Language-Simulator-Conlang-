@@ -498,14 +498,17 @@ class FamiliaLinguistica:
             "desnasalizacao":tools.denasalization,
             # "fricativizacao":tools.fricativization,
         }
-
-        silaba_tonica:str = self.dialetos_criados[lingua]["gramatica"]["silaba_tonica"]
-        config:dict[str, float] = self.dialetos_criados[lingua]["configuracao"]
+        descritivo = self.dialetos_criados[lingua]
+        gramatica = descritivo["gramatica"]
+        silaba_tonica:str = gramatica["silaba_tonica"]
+        config:dict[str, float] = descritivo["configuracao"]
         if(isinstance(word, list)):
             word = "".join(word)
         # criar a possibilidade de cada um acontecer sem ter que fazer isso em cada função.
         # tem que ser em uma só funçao *esta*
         lista_configuracoes:list[str] = list(config.keys())
+        if("a_regra" in gramatica.keys() and random()>0.6):
+            word = self.efetuar_regra(lingua, word)
         conf_sorteada:str = choice(lista_configuracoes)
         c_float = config[conf_sorteada]
         if(conf_sorteada in config_dict.keys()):
@@ -527,345 +530,73 @@ class FamiliaLinguistica:
         word = tools.retornar_palavra_atona(word, silaba_tonica)
         return word
 
-    def especificacoes_palavra(self, lingua, index)->None:
+    def gerar_neologismo(self, lingua:str, iter:int)->None:
         """
-        Desmetaforiza/especifica palavras.
-        Exemplo:
-        >>>class.especificacoes_palavra(lingua = "sa", index = 146)
-        antes -> {
-        'palavra': ['m', 'a', 'ɾ', 'p', 'ʊ', 'ɾ', 'u', 'j', 'ɐ', 'w'],
-        'classe': 'substantivo',
-        'significado': ['outro', 'chao'],
-        'generico': ['quantidade', 'local'],
-        'indices': [43, 132],
-        'uso': 0.9090128565131315
+        """
+
+        descritivo = self.dialetos_criados[lingua]
+        dicionario = descritivo['lingua']
+        gramatica = descritivo["gramatica"]
+        estrutura:str = gramatica['estrutura']
+        indices = list(dicionario.keys())
+
+        neologismos:dict[str, list[list[str]]] = {
+            "tipo-cha":[["beber", "quente"], ["beber", "frio"]],
+            "tipo-alcool":[["beber","bom"],["beber","verdadeiro"],["beber","mau"]],
+            "herbivoro":[["comer","planta"],["animal","comer","planta"],["comer","folha"],["comer","semente"]],
+            "carnivoro":[["comer","carne"],["comer","animal"]],
+            "granizo":[["pedra","gelo"],["pedra","frio"],["pedra","branco"],["pedra","azul"]],
+            "grao":[["pequeno","semente"],["pequeno","comer"]],
+            "tipo-animal":[
+                ["barriga","aspecto"],["cabeca","tamanho"],["boca","aspecto"],["boca","tamanho"],
+                ["cauda","tamanho"],["cauda","aspecto"],["barriga","tamanho"]
+            ],
+            "tipo-peixe":[
+                ["peixe","tamanho"],["peixe","aspecto"],["peixe","caracteristica"],["peixe","manipulacao"],
+                ["peixe","necessidade"],["peixe","movimento"],["peixe","natureza"]
+            ],
+            "braco":[
+                ["membro", "longo"],["membro","grande"],["corpo","mao"],["arvore","mao"],["membro","empurrar"],
+                ["membro","puxar"],["membro","dividir"]
+            ],
+            "cotovelo":[
+                ["membro","dividir"]
+            ],
+            # "joelho":[
+
+            # ],
+            "doente":[["ter","dor"],["dor","fogo"],["dor","frio"]],
+            "inflamacao":[["corpo","aspecto"],["sentir","fogo"],["sentir","mau"]],
+            "podre":[["carne","mau"],["carne","velho"],["carne","morrer"]],
+            "escasso":[["dividir","pouco"],["dividir","fome"]],
+            "casa":[
+                ["local","dormir"],["local","proteger"],["dormir","bom"],["relativo","proteger"],
+                ["relativo","dormir"],["gente","juntar"],["chao","dormir"]
+            ],
+            "construir":[["andar","junto"],["criar","junto"]],
+            "casar":[["criar","junto"],["possuir","junto"]],
+            "debater":[["pensar","junto"],["compartilhar","pensar"],["compartilhar","falar"]],
+            "fome":[["nao","comer"],["comer","pouco"],["dor","barriga"]],
+            "sede":[["nao","beber"],["dor","lingua"],["lingua","seco"],["boca","seco"]],
+            # "ferramenta":[["mao", ""]]
+            "pote":[["relativo","ovo"],["carregar","agua"],["carregar","agua"]]
         }
-        depois -> {
-        'palavra': ['m', 'a', 'ɾ', 'p', 'ʊ', 'ɾ', 'u', 'j', 'ɐ', 'w'],
-        'classe': 'substantivo',
-        'significado': ['territorio'],
-        'generico': ['politica'],
-        'indices': [43, 132],
-        'uso': 0.9090128565131315
-        }
-        """
-        especificacoes = self.dialetos_criados[lingua]['lingua'][index]
-        sig:list[str] = especificacoes['significado']
-        gen:list[str] = especificacoes['generico']
 
-        REGRAS_NEOLOGICAS = [
-            #bebida
-            {
-                'CONDICAO': lambda sig,gen: 'beber' in sig and 'sensorial' in gen,
-                'ACAO': lambda sig,gen: ([choice(["bebida", "cha", "alcool", "medicina"])],['bebida'])
-            },{
-                'CONDICAO': lambda sig,gen: 'beber' in sig and 'tamanho' in gen,
-                'ACAO': lambda sig,gen: (['recipiente'],['objeto']),
-            },{
-                'CONDICAO': lambda sig,gen: 'beber' in sig and any(i in ['caracteristica','carater'] for i in gen),
-                'ACAO': lambda sig,gen: ([choice(['cha','alcool','medicina'])], ['comida'])
-            },
-            #comida
-            {
-                'CONDICAO': lambda sig,gen: 'comer' in sig and 'corpo' in gen,
-                'ACAO': lambda sig,gen: (['carnivo'],['animal'])
-            },
-            {
-                'CONDICAO': lambda sig,gen: 'comer' in sig and 'semente' in gen,
-                'ACAO': lambda sig,gen: (['grao'],['comida']) if gen=='semente' else (['herbivoro'],['animal'])
-            }, # GRAO
-            {
-                'CONDICAO': lambda sig,gen: 'grao' in sig and any(i in ['frio','gelo'] for i in gen),
-                'ACAO': lambda sig,gen: (['granizo'],['natureza'])
-            },
-            #bicho
-            {
-                'CONDICAO': lambda sig,gen: 'bicho' in sig and 'sensorial' in gen,
-                'ACAO': lambda sig,gen: (['entidade'],['religiao'])
-            },{
-                'CONDICAO': lambda sig,gen: 'bicho' in sig and 'aspecto' in gen,
-                'ACAO': lambda sig,gen: (['tipo-animal'], ['animal'])
-            },{
-                'CONDICAO': lambda sig,gen: 'bicho' in sig and 'novo' in gen,
-                'ACAO': lambda sig,gen: (['cria'], ['animal'])
-            },{
-                'CONDICAO': lambda sig,gen: 'bicho' in sig and 'carnivoro' in gen,
-                'ACAO': lambda sig,sen: (['canino-felino'], ['animal'])
-            },
-            {   # PEDRA
-                'CONDICAO': lambda sig,gen: 'pedra' in sig and 'gelo' in gen,
-                'ACAO': lambda sig,gen: (['granizo'], ['natureza'])
-            },{
-                'CONDICAO': lambda sig,gen: 'pedra' in sig and 'fogo' in gen,
-                'ACAO': lambda sig,gen: (['magma'],['natureza'])
-            },{
-                'CONDICAO': lambda sig,gen: 'pedra' in sig and ('aspecto' in gen or 'caracteristica' in gen),
-                'ACAO': lambda sig,gen: (['tipo-minerio'],['minerio'])
-            },{
-                'CONDICAO': lambda sig,gen: 'pedra' in sig and 'frio' in gen,
-                'ACAO': lambda sig,gen: (['gelo'],['natureza'])
-            },
-            {   # MEMBRO
-                'CONDICAO': lambda sig,gen: 'membro' in sig and 'longo' in gen,
-                'ACAO': lambda sig,gen: ([choice(['braco','perna'])], ['corpo'])
-            },
-            {   # ALTO
-                'CONDICAO': lambda sig,gen: 'alto' in sig and 'ceu' in gen,
-                'ACAO': lambda sig,gen: ([choice(['pico', 'cordilheira'])],['natureza'])
-            },{
-                'CONDICAO': lambda sig,gen: 'alto' in sig and 'agua' in gen,
-                'ACAO': lambda sig,gen: ([choice(["onda", "mar", "oceano"])],['natureza'])
-            },
-            { #arvore
-                'CONDICAO': lambda sig,gen: 'arvore' in sig and 'corpo' in gen,
-                'ACAO': lambda sig,gen: (['tronco'],['botanica'])
-            },{
-                'CONDICAO': lambda sig,gen: 'arvore' in sig and 'braco' in gen,
-                'ACAO': lambda sig,gen: (['galho'],['botanica'])
-            },{
-                'CONDICAO': lambda sig,gen: 'arvore' in sig and 'perna' in gen,
-                'ACAO': lambda sig,gen: ([choice(['raiz','ramo'])],['botanica'])
-            },{
-                'CONDICAO': lambda sig,gen: 'arvore' in sig and any(i in ['animal', 'natureza', 'tamanho'] for i in gen),
-                'ACAO': lambda sig, gen: (['tipo-arvore'],['botanica'])
-            },{
-                'CONDICAO': lambda sig,gen: 'arvore' in sig and 'familia' in gen,
-                'ACAO': lambda sig, gen: (['arvore-sagrada'],['cultura','botanica'])
-            },{
-                'CONDICAO': lambda sig,gen: 'arvore' in sig and 'quantidade' in gen,
-                'ACAO': lambda sig, gen: ([choice(['bosque', 'floresta'])],['natureza'])
-            },
-            { #planta
-                'CONDICAO': lambda sig,gen: 'planta' in sig and 'filho' in gen,
-                'ACAO': lambda sig,gen: ([choice(['flor','ramo','semente'])],['botanica'])
-            },
-            { #outro
-                'CONDICAO': lambda sig,gen: 'outro' in sig and any(i in ['chao','terra'] for i in gen),
-                'ACAO': lambda sig,gen: (['territorio'], ['politica'])
-            },
-            { #carne
-                'CONDICAO': lambda sig,gen: 'carne' in sig and 'aspecto' in gen,
-                'ACAO': lambda sig,gen: ([choice(["doente", "podre", "ferida", "inflamacao"])], ['estado'])
-            },{ #agora
-                'CONDICAO': lambda sig,gen: 'agora' in sig and 'mao' in gen,
-                'ACAO': lambda sig,gen: ([choice(["apoio", "ajuda", "auxilio", "soco", "golpe", "agilidade", "segurar"])], ['social'])
-            },{ #vento
-                'CONDICAO': lambda sig,gen: 'vento' in sig and any(i in ['agua', 'molhado'] for i in gen),
-                'ACAO': lambda sig,gen: ([choice(['chuva', 'tormenta', 'tempestade', 'umidade'])], ['tempo'])
-            },{ #cair
-                'CONDICAO': lambda sig,gen: 'cair' in sig and any(i in ['agua', 'molhado'] for i in gen),
-                'ACAO': lambda sig,gen: ([choice(['chuva', 'tormenta', 'tempestade', 'vendaval'])], ['tempo']) if(random()>0.5) else (['cachoeira'],['natureza'])
-            },{ #agua
-                'CONDICAO': lambda sig,gen: 'agua' in sig and 'frio' in gen,
-                'ACAO': lambda sig,gen: (['gelo'],['natureza'])
-            },
-            {
-                'CONDICAO': lambda sig,gen: 'agua' in sig and any(i in ['filho', 'nascer'] for i in gen),
-                'ACAO': lambda sig,gen: ([choice(["riacho", "nascente", "fonte"])],['natureza'])
-            },
-            {
-                'CONDICAO': lambda sig,gen: 'agua' in sig and 'local' in gen,
-                'ACAO': lambda sig,gen: ([choice(["rio", "fonte", "lago"])],['natureza'])
-            },
-            {
-                'CONDICAO': lambda sig,gen: 'agua' in sig and any(i in ['noite', 'dia', 'espirito'] for i in gen),
-                'ACAO': lambda sig,gen: (['espirito-agua'],['religiao'])
-            },
-            {
-                'CONDICAO': lambda sig,gen: 'agua' in sig and any(i in ["deus", "pai", "mae", "avo", "anciao"] for i in gen),
-                'ACAO': lambda sig,gen: ([choice(["deus-agua", "divindade-agua"])],['religiao'])
-            },
-            {
-                'CONDICAO': lambda sig,gen: 'agua' in sig and any(i in ['pedra','terra','chao'] for i in gen),
-                'ACAO': lambda sig,gen: (['lama'],['natureza'])
-            },{
-                'CONDICAO': lambda sig,gen: 'agua' in sig and 'grande' in gen,
-                'ACAO': lambda sig,gen: ([choice(['mar','rio','lago','enchente'])],['natureza'])
-            },{ #TODO
-                'CONDICAO': lambda sig,gen: 'todo' in sig and 'terra' in gen,
-                'ACAO': lambda sig,gen: ([choice(["territorio", "vila", "nacao"])],['politica']) if(random()>0.5) else ([choice(["local", "plano", "chao"])], ['politica'])
-            },{
-                'CONDICAO': lambda sig,gen: 'todo' in sig and 'social' in gen,
-                'ACAO': lambda sig,gen: ([choice(['reuniao', 'motim', 'ritual', 'musica', 'evento', 'festival', 'grupo'])],['social'])
-            },{
-                'CONDICAO': lambda sig,gen: 'todo' in sig and 'bicho' in gen,
-                'ACAO': lambda sig,gen: (['rebanho'],['bicho'])
-            },{
-                'CONDICAO': lambda sig,gen: 'todo' in sig and 'tipo-animal' in gen,
-                'ACAO': lambda sig,gen: ([f'coletivo-de-{"".join(especificacoes['palavra'])}'],['bicho'])
-            },{ #COISA
-                'CONDICAO': lambda sig,gen: 'coisa' in sig and 'morder' in gen,
-                'ACAO': lambda sig,gen: (['bicho'], ['animal'])
-            },{
-                'CONDICAO': lambda sig,gen: 'coisa' in sig and any(i in ['natureza', 'botanica'] for i in gen),
-                'ACAO': lambda sig,gen: (['simbolo-religioso'], ['religiao'])
-            },{
-                'CONDICAO': lambda sig,gen: 'coisa' in sig and any(i in ["animal", "corpo", "familia"] for i in gen),
-                'ACAO': lambda sig,gen: (['criatura-mitologia'], ['religiao'])
-            },{
-                'CONDICAO': lambda sig,gen: 'espirito' in sig and 'vento' in gen,
-                'ACAO': lambda sig,gen: ([choice(["criatura-mitologica", 'espirito-vento'])], ['religiao'])
-            },{
-                'CONDICAO': lambda sig,gen: 'coisa' in sig and any(i in ['so', 'unico'] for i in gen),
-                'ACAO': lambda sig,gen: (['um'], ['quantidade'])
-            },
-            { #CORPO
-                'CONDICAO': lambda sig,gen: 'corpo' in sig and 'mole' in gen,
-                'ACAO': lambda sig,gen: (['fraco'],['caracteristica'])
-            },
-            { # DEDO
-                'CONDICAO': lambda sig,gen: 'dedo' in sig and any(i in ['so', 'unico'] for i in gen),
-                'ACAO': lambda sig,gen: (['um'], ['quantidade'])
-            },
-            { #FOGO
-                'CONDICAO': lambda sig,gen: 'fogo' in sig and 'corpo' in gen,
-                'ACAO': lambda sig,gen: ([choice(["doente", "ferida", "inflamacao", "febre", "dor", "queimadura"])], ['estado'])
-            },{
-                'CONDICAO': lambda sig,gen: 'fogo' in sig and 'corpo' in gen,
-                'ACAO': lambda sig,gen: ([choice(["sol", "estrela", "cometa", "aurora"])], ['natureza']) if(random()>0.5) else (['caminho'],['local'])
-            },{
-                'CONDICAO': lambda sig,gen: 'fogo' in sig and any(i in ['noite','dia', 'espirito'] for i in gen),
-                'ACAO': lambda sig,gen: (['espirito-fogo'],['religiao'])
-            },{
-                'CONDICAO': lambda sig,gen: 'fogo' in sig and any(i in ["deus", "pai", "mae", "avo", "anciao"] for i in gen),
-                'ACAO': lambda sig,gen: ([choice(["deus-fogo", "divindade-fogo"])],['religiao'])
-            },{
-                'CONDICAO': lambda sig,gen: 'fogo' in sig and any(i in ["beber", "bebida"] for i in gen),
-                'ACAO': lambda sig,gen: ([choice(["sopa", "cha", "alcool"])],['bebida'])
-            },{
-                'CONDICAO': lambda sig,gen: 'fogo' in sig and any(i in ["comer", "comida"] for i in gen),
-                'ACAO': lambda sig,gen: ([choice(["tipo-pimenta", "tipo-comida"])],['comida'])
-            },{
-                'CONDICAO': lambda sig,gen: 'fogo' in sig and 'carne' in gen,
-                'ACAO': lambda sig,gen: (['churrasco'],['comida'])
-            },{
-                'CONDICAO': lambda sig,gen: 'fogo' in sig and 'bicho' in gen,
-                'ACAO': lambda sig,gen: ([choice(['bicho-quente','bicho-pelado'])],['animal'])
-            },{ #FRIO
-                'CONDICAO': lambda sig,gen: 'frio' in sig and 'bicho' in gen,
-                'ACAO': lambda sig,gen: ([choice(["bicho-frio", "bicho-peludo"])],['animal'])
-            },{
-                'CONDICAO': lambda sig,gen: 'frio' in sig and any(i in ['homem', 'mulher', 'espirito'] for i in gen),
-                'ACAO': lambda sig,gen: (['espirito-frio','criatura-mitologica'],['religiao']) if random()>0.5 else ([choice(['insulto', 'jeito'])],['social'])
-            },{
-                'CONDICAO': lambda sig,gen: 'frio' in sig and any(i in ['pessoa', 'povo'] for i in gen),
-                'ACAO': lambda sig,gen: ([choice(['povo-frio', 'gelados'])], ['politica'])
-            },{
-                'CONDICAO': lambda sig,gen: 'frio' in sig and 'corpo' in gen,
-                'ACAO': lambda sig,gen: ([choice(["paralisia", "congelado", "derrame", "travado"])],['estado'])
-            },{ #VELHO
-                'CONDICAO': lambda sig,gen: 'velho' in sig and any(i in ["noite", "dia"] for i in gen),
-                'ACAO': lambda sig,gen: ([choice(["ontem", "passado"])],['tempo'])
-            },{
-                'CONDICAO': lambda sig,gen: 'velho' in sig and any(i in ["pai", "mae"] for i in gen),
-                'ACAO': lambda sig,gen: (['avo'],['familia']) if(random()>0.5) else ([choice(["anciao", "cura", "xama", "mago"])],['social'])
-            },{ #NOVO
-                'CONDICAO': lambda sig,gen: 'novo' in sig and any(i in ["noite", "dia"] for i in gen),
-                'ACAO': lambda sig,gen: ([choice(["amanha", "futuro"])],['tempo'])
-            },{ #NOITE
-                'CONDICAO': lambda sig,gen: 'noite' in sig and 'caracteristica' in gen,
-                'ACAO': lambda sig,gen: ([choice(["criatura-noite","espirito-noite"])],['religiao'])
-            },{ #HOMEM E MULHER
-                'CONDICAO': lambda sig,gen: 'homem' in sig and 'mole' in gen,
-                'ACAO': lambda sig,gen: (['fraco'],['caracteristica']) if(random()>0.5) else (['doente'],['estado'])
-            },{
-                'CONDICAO': lambda sig,gen: 'mulher' in sig and any(i in ['vermelho','fluido','sangue'] for i in gen),
-                'ACAO': lambda sig,gen: (['menstruacao'],['corpo'])
-            },{
-                'CONDICAO': lambda sig,gen: any(i in ['homem','mulher'] for i in sig) and any(i in ['frio','quente'] for i in gen),
-                'ACAO': lambda sig,gen: ([choice(["doente", "ferida", "inflamacao", "febre", "queimadura"])],['estado'])
-            },{ #FAZER
-                'CONDICAO': lambda sig,gen: 'fazer' in sig and 'nascer' in gen,
-                'ACAO': lambda sig,gen: (['criar'],['manipulacao'])
-            },{
-                'CONDICAO': lambda sig,gen: 'fazer' in sig and 'dormir' in gen,
-                'ACAO': lambda sig,gen: ([choice(['desmaiar','matar'])],['manipulacao'])
-            },{
-                'CONDICAO': lambda sig,gen: 'fazer' in sig and 'morrer' in gen,
-                'ACAO': lambda sig,gen: (['matar'],['manipulacao'])
-            },{ #PARTIR
-                'CONDICAO': lambda sig,gen: 'partir' in sig and any(i in ['pele','cabeca','pescoco'] for i in gen),
-                'ACAO': lambda sig,gen: ([choice(['matar','esfolar'])],['manipulacao'])
-            },
-            {   # DIVIDIR
-                'CONDICAO': lambda sig,gen: 'dividir' in sig and 'organizar' in gen,
-                'ACAO': lambda sig,gen: (['contar'],['necessidade'])
-            },{
-                'CONDICAO': lambda sig,gen: 'dividir' in sig and 'agua' in gen,
-                'ACAO': lambda sig,gen: (['afluente'],['natureza']) if random()>0.3 else (['desvio'], ['local'])
-            },
-            {
-                'CONDICAO':lambda sig,gen: 'dividir' in sig and 'dividir' in gen,
-                'ACAO': lambda sig,gen: (['fracao'],['conceito'])
-            },
-            {   # NUMERO
-                'CONDICAO': lambda sig,gen: 'dois' in sig and 'mao' in gen,
-                'ACAO': lambda sig,gen: (['sete'],['quantidade'])
-            },{
-                'CONDICAO': lambda sig,gen: any(i in ['varios','muito','mao_outro','mao'] for i in sig) and 'mao' in gen,
-                'ACAO': lambda sig,gen: (['dez'],['quantidade']),
-            },{ # COR
-                'CONDICAO': lambda sig,gen: 'fluido' in sig and any(i in ["pele", "corpo"] for i in gen),
-                'ACAO': lambda sig,gen: ([choice(['suor','sangue'])], ['corpo']) if random()>0.5 else ([choice(['vermelho'])], ['aspecto']),
-            },{
-                'CONDICAO': lambda sig,gen: 'agua' in sig and 'agua' in gen,
-                'ACAO': lambda sig,gen: (['azul'], ['aspecto']) if random()>0.5 else (['mar', 'rio'], ['natureza']),
-            },
-            {   # SEMELHANTE
-                'CONDICAO': lambda sig,gen: 'semelhante' in sig and 'ceu' in gen,
-                'ACAO': lambda sig,gen: ([choice(['agua','mar','oceano'])], ['natureza']),
-            },{
-                'CONDICAO': lambda sig,gen: 'semelhante' in sig and 'outro' in gen,
-                'ACAO': lambda sig,gen: (['diferente'], ['quantidade']),
-            },{
-                'CONDICAO': lambda sig,gen: 'semelhante' in sig and 'pai' in gen,
-                'ACAO': lambda sig,gen: (['tio'], ['familia']),
-            },{
-                'CONDICAO': lambda sig,gen: 'semelhante' in sig and 'mae' in gen,
-                'ACAO': lambda sig,gen: (['tia'], ['familia']),
-            },{
-                'CONDICAO': lambda sig,gen: 'semelhante' in sig and 'sangue' in gen,
-                'ACAO': lambda sig,gen: (['vermelho'], ['cor']),
-            },
-            { # EXISTIR
-                'CONDICAO': lambda sig,gen: 'existir' in sig and any(i in ['so', 'unico'] for i in gen),
-                'ACAO': lambda sig,gen: (['um'], ['quantidade']),
-            },
-            {   # SEMENTE
-                'CONDICAO': lambda sig,gen: 'semente' in sig and 'relativo' in gen,
-                'ACAO': lambda sig,gen: (['grao'], ['comida'])
-            },
-        ]
+        def encontrar_termo(termo:str)->int:
+            """
+            """
+            chaves:list[int] = list(dicionario.keys())
+            shuffle(chaves)
+            for c in chaves:
+                if(termo in dicionario[c]["generico"]):
+                    # print(c)
+                    return c
+                # print(dicionario[c])
 
-        iter:int = 0
-        for r in REGRAS_NEOLOGICAS:
-            if(r['CONDICAO'](sig,gen)):
-                especificacoes['significado'],especificacoes['generico'] = r['ACAO'](sig,gen)
-                break
-            elif(r['CONDICAO'](gen,sig)):
-                especificacoes['significado'],especificacoes['generico'] = r['ACAO'](gen,sig)
-                break
-            elif(r['CONDICAO'](sig,sig)):
-                especificacoes['significado'],especificacoes['generico'] = r['ACAO'](sig,sig)
-                break
-            elif(r['CONDICAO'](gen,gen)):
-                especificacoes['significado'],especificacoes['generico'] = r['ACAO'](gen,gen)
-            iter+=1
-        if(iter>=len(REGRAS_NEOLOGICAS)):
-            del especificacoes
-
-    """
-    Nao faz sentido criar toda hora palavras aleatórias.
-    Vale a pena induzir as esoclhas de forma que faça sentido.
-    Bicho+chao=terrestre
-    Bicho+pote=nao deveria existir
-    """
-
-    def gerar_nova_palavra(self, lingua:str, iter:int)->None:
-        """
-        """
-
-        def aglutinar(estrutura, dicionario_palavra:list[str], palavra_par:list[str])->list[str]:
+        def aglutinar(dicionario_palavra:list[str], palavra_par:list[str])->tuple[str]:
+            """
+            Junta duas palavras, definindo a ordem de acordo com a estrutura da língua (SOV, OVS, etc).
+            """
             if(estrutura in ["SVO", "SOV", "OSV"]):
                 p_1 = dicionario_palavra['palavra']
                 p_2 = palavra_par['palavra']
@@ -874,291 +605,370 @@ class FamiliaLinguistica:
                 p_1 = dicionario_palavra['palavra']
                 p_2 = palavra_par['palavra']
                 return (p_1 + p_2, 'verbo') if(dicionario_palavra['classe'] == 'verbo') else (p_2 + p_1, dicionario_palavra['classe'])
+            
+        def sortear_significados()->tuple[str, list[str]]:
+            """Sorteia significados."""
+            lista_neologismos:list[str] = list(neologismos.keys())
+            significado_sorteado:str = choice(lista_neologismos)
+            significados_sorteados:list[str] = choice(neologismos[significado_sorteado])
+            return significado_sorteado, significados_sorteados
+    
+        def inserir_nova_palavra()->None:
+            significado, significados_sorteados = sortear_significados()
+            palavras_do_ramo:list[str] = self.retornar_palavras_do_ramo(lingua = lingua)
+            if(significado not in palavras_do_ramo or random()>0.8):
+                sig_um:str = significados_sorteados[0]
+                sig_dois:str = significados_sorteados[1]
+                # print(significados_sorteados)
 
-        dicionario_de_pares:dict[str,list[str]] = {
-            'agora':('mao'),
-            'agua':('familia','nascer','local','anciao','pedra','terra','chao','grande','dividir','alto'),
-            'alto':('terra','ceu','agua'),
-            'arvore':('corpo','braco','perna','animal','natureza','tamanho','familia','quantidade'),
-            'beber':('sensorial','tamanho','caracteristica','carater'),
-            'bicho':('sensorial','aspecto','novo','todo'),
-            'carne':('aspecto'),
-            'cair':('molhado','agua'),
-            'ceu':('alto', 'semelhante'),
-            'coisa':('natureza','botanica','animal','corpo','familia','morder', 'so', 'unico'),
-            'corpo':('fio','chao','mole', 'mao'),
-            'comer':('corpo','botanica'),
-            'dedo': ('so', 'unico'),
-            'dividir':('organizar', 'dividir'),
-            'fazer':('nascer','dormir','morrer'),
-            'fogo':('corpo','ceu','noite','dia','familia','anciao','comida','comer','bebida','beber'),
-            'frio':('pessoa','corpo','animal','grao'),
-            'gelo':('grao','pedra'),
-            'grao':('frio','gelo'),
-            'manipulacao':('pele','morrer'),
-            'mao':('agora', 'corpo'),
-            'membro':('alto', 'topo','longo'),
-            'mudar':('corpo','natureza'),
-            'organizar':('dividir'),
-            'nascer':('agua','fazer'),
-            'pedra':('gelo','ceu','fogo','aspecto', 'agua'),
-            'relativo':('semente'),
-            'semelhante':('ceu','sangue','agua','mae','pai'),
-            'semente':('relativo'),
-            'terra':('alto', 'todo', 'agua'),
-            'tipo-bicho':('todo'),
-            'todo':('social','terra','bicho','tipo-bicho'),
-            'vento':('agua','molhado'),
+                idx_um:int = self.retornar_indice(lingua = lingua, buscar_palavra = sig_um)
+                if(idx_um is None):
+                    idx_um = encontrar_termo(sig_um)
+                idx_dois:int = self.retornar_indice(lingua = lingua, buscar_palavra = sig_dois)
+                if(idx_dois is None):
+                    idx_dois = encontrar_termo(sig_dois)
+                # print(idx_um, idx_dois)
+                descricao_um = dicionario[idx_um]
+                descricao_dois = dicionario[idx_dois]
 
-        }
-        dicionario = self.dialetos_criados[lingua]['lingua']
-        indices = list(dicionario.keys())
-        indices_limitados = indices[:len(self.dialetos_criados['original']['lingua'].keys())]
-
-        for _ in range(iter):
-            shuffle(indices_limitados)
-            index = choice(indices_limitados)
-            dicionario_palavra = dicionario[index]
-            contador = 0
-            while((dicionario_palavra['significado'][0] or dicionario_palavra['generico'][0]) not in dicionario_de_pares.keys()):
-                index = indices_limitados[contador]
-                dicionario_palavra = dicionario[index]
-                contador+=1
-            significado = dicionario_palavra['significado'][0]
-            combinacoes:list[str] = list(dicionario_de_pares[significado])
-
-            shuffle(indices_limitados)
-            palavra_par:dict[str,list[str]] = {}
-            index_2:int = 0
-            for i in indices_limitados:
-                dic_palavra_temporaria:dict[str,list[str]] = dicionario[i]
-                if(any(i in dic_palavra_temporaria['significado'] for i in combinacoes) or any(i in dic_palavra_temporaria['generico'] for i in combinacoes)):
-                    palavra_par = dic_palavra_temporaria
-                    index_2 = i
-                    break
-            if(len(palavra_par.keys())>0):
-                estrutura:list[str] = self.dialetos_criados[lingua]['gramatica']['estrutura']
-                aglutinacao, classe_gramatical = aglutinar(estrutura, dicionario_palavra, palavra_par)
-                significado = dicionario_palavra['significado'] + palavra_par['significado']
-                generico = dicionario_palavra['generico'] + palavra_par['generico']
-                silaba_tonica:str = self.dialetos_criados[lingua]['gramatica']['silaba_tonica']
-                aglutinacao = self.implementar_efeitos(lingua, aglutinacao)
-                # aglutinacao = iterar_efeitos(aglutinacao, [harmonia_vocal])
-                self.dialetos_criados[lingua]['lingua'][max(indices)+1] = {
-                    'palavra': aglutinacao,
+                idx_palavras:list[int] = descricao_um["indices"]
+                idx_palavras.extend(descricao_dois["indices"])
+                idx_palavras.extend([idx_um, idx_dois])
+                
+                p_aglutinado, classe_gramatical = aglutinar(descricao_um, descricao_dois)
+                generico = descricao_um['generico'] + descricao_dois['generico']
+                p_aglutinado = self.implementar_efeitos(lingua, p_aglutinado)
+                descritivo['lingua'][max(indices)+1] = {
+                    'palavra': p_aglutinado,
                     'classe': classe_gramatical,
-                    'significado': significado,
+                    'significado': [significado],
                     'generico': generico,
-                    'indices': [index, i],
+                    'indices': idx_palavras,
                     'uso': 1.0,
                 }
-                self.especificacoes_palavra(lingua, max(indices)+1)
+            # print(descritivo['lingua'][max(indices)+1])
+
+        for _ in range(iter):
+            inserir_nova_palavra()
+        return None
+            
+
+    def mudar_significado(self, lingua:str)->None:
+        """
+        Muda o significado de algumas palavras ou ramifica a mesma palavra dando um novo significado a ela.
+        Como se tivéssemos a palavra 
+        """
+        mudancas_possiveis:dict[str, list[str]] = {
+            "pe":["estavel", "base", "centro"],
+            "criar":["confeccionar", "desenvolver"],
+            "evocar":["chamar"],
+            "falar":["dizer", "discutir"],
+            "cabeca":["chefe","lider","principal"],
+            "topo":["unico","principal","chefe","lider"],
+            "proteger":["amar","querer","cuidar","viver"],
+            "mao":["criar","confeccionar","manipular","ferramenta"],
+            "querer":["desejo"],
+            "pessoa": ["corpo", "individuo", "mortal", "alguem"],
+            "homem": ["guerreiro", "esposo", "pai"],
+            "mulher": ["mae", "esposa", "curandeira"],
+            "semelhante": ["irmao", "parente", "aliado"],
+            "bicho": ["besta", "fera", "monstro", "criatura", "selvagem"],
+            "verme": ["parasita", "larva", "rascundo", "infame"],
+            "ovo": ["origem", "geracao", "carcaca", "ciclo", "nascimento", "inicio"],
+            "corpo": ["forma", "carcaca","meio"],
+            "cauda":["fim"],
+            "som":["voz"],
+            "junto":["familia","abrigo","uniao"],
+            "casa": ["familia", "abrigo", "seguranca", "ninho"],
+            "outro": ["estranho", "diferente", "inimigo"],
+            "relativo": ["depende", "ligado", "proximo"],
+            "dor": ["fogo_interno", "ferida", "choro"],
+            "medo": ["fuga", "perigo", "atencao"],
+            "alegria": ["amigo","festa"],
+            "deus": ["trovao", "sol", "protetor"],
+            "gente": ["povo", "tribo", "humano"]
+        }
+        psvs:list[str] = choice(list(mudancas_possiveis.keys()))
+        sig_sorteado:str = choice(mudancas_possiveis[psvs])
+        palavras_do_ramo:list[str] = self.retornar_palavras_do_ramo(lingua = lingua)
+        if(sig_sorteado not in palavras_do_ramo or random()>0.8):
+            dicionario = self.dialetos_criados[lingua]["lingua"]
+            indices:int = max(list(dicionario.keys()))
+            idx:int = self.retornar_indice(
+                lingua = lingua,
+                buscar_palavra = psvs
+            )
+            novo_indice:int = indices+1
+            dicionario[novo_indice] = dicionario[idx]
+            dicionario[novo_indice]["significado"] = [sig_sorteado]
+        return None
+
+    def retornar_palavras_nativas(self, lingua:str)->list[str]:
+        """
+        Retorna uma lista embaralhada com as palavras nativas do dialeto.
+        """
+        dicionario = self.dialetos_criados[lingua]["lingua"]
+        indices:list[int] = list(dicionario.keys())
+        shuffle(indices)
+        return [dicionario[p]["palavra"] for p in indices]
 
     def gerar_regra(self, lingua: str) -> None:
         """
         Define uma regra específica da língua/ramo.
         Leva algumas iterações para a regra acabar, e isso se estende às filhas.
         """
-        descritivo = self.dialetos_criados[lingua]
-        vogais:list[str] = descritivo["sons"]["vogais"].copy()
-        consoantes:dict[str, list[str]] = {
-            'p':['b', 'k', 'ɸ', 'pʰ'], 't':['d', 's', 'ʦ', 'tʰ'], 'k':['g', 'p', 'x', 'kʰ'], 
-            's':['ʃ', 'z', 't', 'ʦ', 'h'], 'b':['p', 'g', 'β', 'bʰ'], 'd':['t', 'z', 'ʣ'], 
-            'g':['k', 'b', 'ɣ', 'gʰ'], 'z':['s', 'd', 'ʣ', 'ʒ'], 'w':['b', 'β', 'j'], 'h':['k', 's', 'p', 'g'],
-            'x':['x', 'ɣ', 'k', 'h'], 'ɸ':['f', 'p', 'pʰ', 'β'], 'q':['k', 'ʔ', 'h', 'ɢ'], 
-            'ʔ':['', 'h', 'k', 't'], 'β':['w', 'b', 'ɸ', 'v'], 'θ':["θ", "s", "f", "t"],
-            'ð':["d", "z", "v"], 'ʦ':['t', 's', 'ʣ', 'ʧ'], 'ʧ':['t', 'ʤ', 'ʃ', 'ʦ'], 'ʤ':['ʒ', 'd', 'ʧ', 'ʣ']
-        }
-        lenicao: dict[str, str] = {
-            'a':'ɐ', 'i':'ɪ', 'u':'ʊ', 'ɶ':'œ', 'ø':'ə', 'y':'ʏ', 
-            'ʌ':'ɐ', 'ä':'ɐ', 'ɤ':'ʌ', 'ɞ':'ɵ', 'ɑ':'ɐ', 'æ':'ɐ', 
-            'ʉ':'ʊ', 'ɯ':'ʊ',
-        }
-        def selecionar(tipo: str) -> str:
-            vogais.extend([lenicao.get(v) for v in vogais if v in lenicao.keys() and tools.eh_vogal(v)])
+        try:
+            descritivo = self.dialetos_criados[lingua]
+            sons = descritivo["sons"]
+            vogais:list[str] = sons["vogais"].copy()
+            consoantes:list[str] = sons["consoantes"].copy()
+            dict_consoantes:dict[str, list[str]] = {
+                'p':['b', 'k', 'ɸ', 'pʰ'], 't':['d', 's', 'ʦ', 'tʰ'], 'k':['g', 'p', 'x', 'kʰ'], 
+                's':['ʃ', 'z', 't', 'ʦ', 'h'], 'b':['p', 'g', 'β', 'bʰ'], 'd':['t', 'z', 'ʣ'], 
+                'g':['k', 'b', 'ɣ', 'gʰ'], 'z':['s', 'd', 'ʣ', 'ʒ'], 'w':['b', 'β', 'j'], 'h':['k', 's', 'p', 'g'],
+                'x':['x', 'ɣ', 'k', 'h'], 'ɸ':['f', 'p', 'pʰ', 'β'], 'q':['k', 'ʔ', 'h', 'ɢ'], 
+                'ʔ':['', 'h', 'k', 't'], 'β':['w', 'b', 'ɸ', 'v'], 'θ':["θ", "s", "f", "t"],
+                'ð':["d", "z", "v"], 'ʦ':['t', 's', 'ʣ', 'ʧ'], 'ʧ':['t', 'ʤ', 'ʃ', 'ʦ'], 
+                'ʤ':['ʒ', 'd', 'ʧ', 'ʣ'], 'ɾ':['l','d','t','z']
+            }
+            forticao: dict[str, list[str]] = {
+                'ɐ': ['a','ʌ','ɤ','ɐ'], 'ä': ['ä','a','ɐ','e'], 'ɑ': ['ɑ','a','ɐ','o'], 'æ': ['a', 'e', 'ɛ'], 
+                'a':['a','ɐ','ä','ɑ','æ'], 'ɪ': ['i', 'e'], 'ʊ': ['u', 'o', 'ʉ'], 'ʏ': ['y', 'u'], 'ɛ': ['e', 'i'], 
+                'ɔ':['o', 'u'], 'ɘ': ['e', 'i', 'ə'], 'ɵ': ['o', 'u', 'ø'], 'ɶ': ['œ', 'ɔ', 'e'], 'ø': ['e', 'o'],
+                'y': ['i', 'u'], 'ʌ': ['ɤ', 'o', 'u'], 'ɤ': ['o', 'u'], 'ɯ': ['u', 'i'], 'ʉ': ['u', 'i'], 'ɤ': ['o'],
+            }
+            lenicao: dict[str, list[str]] = {
+                'i': ['ɪ', 'e', 'ɘ', 'ə'], 'ɪ': ['i', 'e', 'ɘ', 'ə'], 'e': ['ɛ', 'ɘ', 'ə', 'ɐ'], 'ɛ': ['e', 'æ', 'ɐ', 'a'],
+                'æ': ['a', 'ɐ', 'ɛ', 'e'], 'a': ['ɐ', 'ä', 'ɑ', 'æ', 'ʌ', 'ə'], 'ä': ['a', 'ɐ', 'ɑ', 'æ', 'ə'],
+                'ɑ': ['a', 'ɐ', 'ä', 'ʌ', 'ɔ'], 'ɐ': ['a', 'ʌ', 'ä', 'ɑ', 'ə'], 'ʌ': ['ɐ', 'ɤ', 'o', 'ə'], 'ɤ': ['ʌ', 'o', 'ə'],
+                'u': ['ʊ', 'o', 'ɵ', 'ə'], 'ʊ': ['u', 'o', 'ɵ', 'ə'], 'o': ['ɔ', 'ɵ', 'ə', 'ʌ'], 'ɔ': ['o', 'ʌ', 'ɐ', 'a'],
+                'y': ['ʏ', 'ø', 'ɘ'], 'ʏ': ['y', 'ø', 'ɘ'], 'ø': ['œ', 'ɘ', 'ə'], 'œ': ['ø', 'ɶ', 'ɐ'], 'ɶ': ['œ', 'ɐ', 'a'],
+                'ɘ': ['ə', 'e', 'ɐ'], 'ɵ': ['ə', 'o', 'ʊ'], 'ɞ': ['ɵ', 'ɔ', 'ɐ'], 'ə': ['ɘ', 'ɵ', 'ɐ'], 'ɯ': ['ʊ', 'u', 'ɤ', 'ə'],
+                'ʉ': ['ʊ', 'u', 'ɘ', 'ə'],
+            }
+            transcricao:dict[str,str] = {
+                "C":tools.global_consonants_str,
+                "V":tools.global_vowels_str
+            }
+
+            def retornar_aproximante(som:str)->str:
+                try:
+                    if(tools.eh_vogal(som[0])):
+                        if(som[0] in forticao.keys()):
+                            lista_vogais:list[str] = forticao[som[0]]
+                        else:
+                            lista_vogais:list[str] = lenicao[som[0]]
+                        shuffle(lista_vogais)    
+                        for v in lista_vogais:
+                            if(v in vogais):
+                                return v
+                    else:
+                        lista_consoantes:list[str] = dict_consoantes[som]
+                        shuffle(lista_consoantes)
+                        for c in lista_consoantes:
+                            if(c in consoantes):
+                                return c
+                except Exception:
+                    return som
+
+            def estrutura():
+                estruturas: list[str] = ["CVC", "VCV", "VC", "CV", "CC", "VV", "V", "C"]
+                estrutura_slc: str = choice(estruturas)
+                psb_slc = None
+                semi_vogais = list("wj")
+                semi_slc = choice(semi_vogais)
+                palavras_nativas:list[str] = self.retornar_palavras_nativas(lingua)
+
+                if estrutura_slc == "CVC":
+                    for palavra in palavras_nativas:
+                        match = search(rf"([{transcricao["C"]}])([{transcricao["V"]}])([{transcricao["C"]}])", palavra)
+                        if match:
+                            c1 = match.group(1)
+                            v  = match.group(2)
+                            c2 = match.group(3)
+                            # print(c1, v, c2)
+                            break
+                    psb_1 = [
+                        rf"(?<=[{c1}])([{v}](?=[{c2}]))", rf"^[{c1}]([{v}](?=[{c2}]))", rf"[{c1}]([{v}](?=[{c2}]))$",
+                    ]
+                    psb_2 = [
+                        rf"{retornar_aproximante(v)}", rf"{semi_slc}{v}", rf"{v}{semi_slc}",
+                        rf"{semi_slc}{retornar_aproximante(v)}", rf"{retornar_aproximante(v)}{semi_slc}",
+                    ]
+                    psb_slc = (choice(psb_1), choice(psb_2))
+                        
+                elif estrutura_slc == "VCV":
+                    for palavra in palavras_nativas:
+                        match = search(rf"([{transcricao["V"]}])([{transcricao["C"]}])([{transcricao["V"]}])", palavra)
+                        if match:
+                            v1 = match.group(1)
+                            c  = match.group(2)
+                            v2 = match.group(3)
+                            # print(v1, c, v2)
+                            break
+                    c2 = retornar_aproximante(c)
+                    tipo_retorno_2 = choice([rf"{v2}{v1}", rf"{retornar_aproximante(v1)}", rf"{retornar_aproximante(v2)}"])
+                    possibilidades = [
+                        (rf"^[{v1}]([{c}](?=[{v2}]))", rf"{c2}"),
+                        (rf"[{v1}]([{c}](?=[{v2}]))$", rf"{c2}"),
+                        (rf"(?<=[{v1}])([{c}](?=[{v2}]))", rf"{c2}"),
+                        (rf"^([{v1}])([{c}](?=[{v2}]))", tipo_retorno_2),
+                        (rf"([{v1}])([{c}](?=[{v2}]))$", tipo_retorno_2)
+                    ]
+                    psb_slc = choice(possibilidades)
+                    
+                elif estrutura_slc == "VC":
+                    for palavra in palavras_nativas:
+                        match = search(rf"([{transcricao["V"]}])([{transcricao["C"]}])", palavra)
+                        if match:
+                            v = match.group(1)
+                            c  = match.group(2)
+                            # print(v, c)
+                            break
+                    c2 = retornar_aproximante(c)
+                    tipo_retorno_2 = choice([rf"{semi_slc}{c}", rf"{semi_slc}{c2}"])
+                    possibilidades = [
+                        (rf"(?<=[{v}])([{c}])", rf"{c2}"),
+                        (rf"^[{v}]([{c}])", rf"{c2}"),
+                        (rf"[{v}]([{c}])$", rf"{c2}"),
+                        (rf"(?<=[{v}])([{c}])", tipo_retorno_2),
+                        (rf"^[{v}]([{c}])", tipo_retorno_2),
+                        (rf"[{v}]([{c}])$", tipo_retorno_2),
+                        (rf"(?<=[{v}])([{c}])", lambda _: ""),
+                    ]
+                    psb_slc = choice(possibilidades)
+                    
+                elif estrutura_slc == "CV":
+                    for palavra in palavras_nativas:
+                        match = search(rf"([{transcricao["C"]}])([{transcricao["V"]}])", palavra)
+                        if match:
+                            c = match.group(1)
+                            v  = match.group(2)
+                            # print(c, v)
+                            break
+                    v3:str = retornar_aproximante(v)
+                    possibilidades = [
+                        (rf"(?<=[{c}])([{v}])", rf"{v3}"),
+                        (rf"^[{c}]([{v}])", rf"{v3}"),
+                        (rf"[{c}]([{v}])$", rf"{v3}"),
+                    ]
+                    psb_slc = choice(possibilidades)
+                    
+                elif estrutura_slc == "VV":
+                    for palavra in palavras_nativas:
+                        match = search(rf"([{transcricao["V"]}])([{transcricao["V"]}])", palavra)
+                        if match:
+                            v1  = match.group(1)
+                            v2  = match.group(2)
+                            # print(v1, v2)
+                            break
+                    v3:str = retornar_aproximante(v2)
+                    tipo_retorno_1 = choice([rf"{retornar_aproximante(v2)}", rf"{semi_slc}\g<1>"])
+                    possibilidades = [
+                        (rf"(?<=[{v1}])([{v2}])", 
+                        tipo_retorno_1),
+                        (rf"^[{v1}]([{v2}])",
+                        tipo_retorno_1),
+                        (rf"[{v1}]([{v2}])$", 
+                        tipo_retorno_1),
+                    ]
+                    psb_slc = choice(possibilidades)
+                    
+                elif estrutura_slc == "CC":
+                    for palavra in palavras_nativas:
+                        match = search(rf"([{transcricao["C"]}])([{transcricao["C"]}])", palavra)
+                        if match:
+                            c1  = match.group(1)
+                            c2  = match.group(2)
+                            # print(c1, c2)
+                            break
+                    c3:str = retornar_aproximante(c2)
+                    tipo_retorno_1:str = choice([rf"{c3}", ""])
+                    possibilidades = [
+                        (rf"(?<=[{c1}])([{c2}])", tipo_retorno_1),
+                        (rf"^[{c1}]([{c2}])", tipo_retorno_1),
+                        (rf"[{c1}]([{c2}])$", tipo_retorno_1),
+
+                        # 3. Metátese (Inversão de posição entre c1 e c2)
+                        (rf"([{c1}])([{c2}])", lambda m: f"{m.group(2)}{m.group(1)}"),
+                        (rf"^([{c1}])([{c2}])", lambda m: f"{m.group(2)}{m.group(1)}"),
+                        (rf"([{c1}])([{c2}])$", lambda m: f"{m.group(2)}{m.group(1)}"),
+
+                        # 4. Modificação em c2
+                        (rf"^[{c1}]([{c2}])", lambda m: 
+                            tools.retornar_aproximante(m.group(1), "sonora", 2) 
+                            if "surda" in tools.verificar_classe(c2)
+                            else tools.retornar_aproximante(m.group(1), "surda", 2)
+                        ),
+                        (rf"[{c1}]([{c2}])$", lambda m: 
+                            tools.retornar_aproximante(m.group(1), "sonora", 2) 
+                            if "surda" in tools.verificar_classe(c2)
+                            else tools.retornar_aproximante(m.group(1), "surda", 2)
+                        ),
+                        (rf"^([{c1}])[{c2}]", lambda m: 
+                            tools.retornar_aproximante(m.group(1), "sonora", 2) 
+                            if "surda" in tools.verificar_classe(c2)
+                            else tools.retornar_aproximante(m.group(1), "surda", 2)
+                        ),
+                        (rf"([{c1}])[{c2}])$", lambda m: 
+                            tools.retornar_aproximante(m.group(1), "sonora", 2) 
+                            if "surda" in tools.verificar_classe(c2)
+                            else tools.retornar_aproximante(m.group(1), "surda", 2)
+                        ),
+                    ]
+                    psb_slc = choice(possibilidades)
+                    
+                elif estrutura_slc == "V":
+                    for palavra in palavras_nativas:
+                        match = search(rf"([{transcricao["V"]}])", palavra)
+                        if match:
+                            v  = match.group(1)
+                            # print(v)
+                            break
+                    print(v)
+                    v2 = retornar_aproximante(v)
+                    tipo_retorno_1 = choice([rf"{v2}", r"h\g<1>", rf"h{v2}"])
+                    tipo_retorno_2 = choice([rf"{v2}", r"\g<1>h", rf"{v2}h"])
+                    possibilidades = [
+                        (rf"^([{v}])", tipo_retorno_1),
+                        (rf"([{v}])$", tipo_retorno_2),
+                    ]
+                    psb_slc = choice(possibilidades)
+                    
+                else:
+                    for palavra in palavras_nativas:
+                        match = search(rf"([{transcricao["C"]}])", palavra)
+                        if match:
+                            c  = match.group(1)
+                            # print(c)
+                            break
+                    c2 = retornar_aproximante(c)
+                    possibilidades = [
+                        (rf"^([{c}])", rf"{c2}"),
+                        (rf"[{c}]$", rf"{c2}"),
+                        (rf"^([{c}])", lambda m: tools.retornar_aproximante(m.group(1), "sonora", 2) 
+                            if("surda" in tools.verificar_classe(m.group(1))) 
+                            else tools.retornar_aproximante(m.group(1), "surda", 2)
+                        ),
+                        (rf"([{c}])$", lambda m: tools.retornar_aproximante(m.group(1), "sonora", 2) 
+                            if("surda" in tools.verificar_classe(m.group(1)))
+                            else tools.retornar_aproximante(m.group(1), "surda", 2)
+                        ),
+                    ]
+                    psb_slc = choice(possibilidades)
+                
+                return psb_slc
+
+            gramatica = descritivo["gramatica"]
+            if "a_regra" not in gramatica:
+                gramatica["a_regra"] = {}
             
-            geral: list[str] = vogais if (tipo.upper() == "V") else consoantes
+            ultima_regra = max(gramatica["a_regra"].keys()) + 1 if gramatica["a_regra"] else 0
+            estrutura_slc = estrutura()
+            gramatica["a_regra"][ultima_regra] = estrutura_slc
 
-            if(tipo == "C"):
-                letras_slc = list(geral.keys())
-                shuffle(letras_slc)
-                consoantes_lingua = descritivo["sons"]["consoantes"]
-                for letra in letras_slc:
-                    if(letra in consoantes_lingua):
-                        variacoes:list[str] = consoantes.get(letra)
-                        for va in variacoes:
-                            if(va in consoantes_lingua):
-                                return va
-                
-            else:
-                som_id = randint(0, len(geral)-1)
-                return "".join(geral[som_id])
-            return choice(vogais.keys() if tipo == "V" else consoantes.keys())
-
-        def estrutura():
-            estruturas: list[str] = ["CVC", "VCV", "VC", "CV", "CC", "VV", "V", "C"]
-            estrutura_slc: str = choice(estruturas)
-            psb_slc = None
-
-            if estrutura_slc == "CVC":
-                c1 = selecionar("C")
-                c2 = selecionar("C")
-                v1 = selecionar("V")
-                v2 = selecionar("V")
-                possibilidades = [
-                    (rf"(?<=[{c1}])([{v1}](?=[{c2}]))", rf"{v2}"),
-                    (rf"^[{c1}]([{v1}](?=[{c2}]))", rf"{v2}"),
-                    (rf"[{c1}]([{v1}](?=[{c2}]))$", rf"{v2}"),
-                ]
-                psb_slc = choice(possibilidades)
-                
-            elif estrutura_slc == "VCV":
-                v1 = selecionar("V")
-                v2 = selecionar("V")
-                c1 = selecionar("C")
-                c2 = selecionar("C")
-                possibilidades = [
-                    # (rf"(?<=[{v1}])([{c1}](?=[{v2}]))", rf"{c2}"),
-                    (rf"^[{v1}]([{c1}](?=[{v2}]))", rf"{c2}"),
-                    (rf"[{v1}]([{c1}](?=[{v2}]))$", rf"{c2}"),
-                    (rf"(?<=[{v1}])([{c1}](?=[{v2}]))", rf"{v2}{v1}"),
-                    (rf"^([{v1}])([{c1}](?=[{v2}]))", rf"{v2}{v1}"),
-                    (rf"([{v1}])([{c1}](?=[{v2}]))$", rf"{v2}{v1}")
-                ]
-                psb_slc = choice(possibilidades)
-                
-            elif estrutura_slc == "VC":
-                v = selecionar("V")
-                c1 = selecionar("C")
-                c2 = selecionar("C")
-                semi_vogais = list("wj")
-                semi_slc = choice(semi_vogais)
-                possibilidades = [
-                    (rf"(?<=[{v}])([{c1}])", rf"{c2}"),
-                    (rf"^[{v}]([{c1}])", rf"{c2}"),
-                    (rf"[{v}]([{c1}])$", rf"{c2}"),
-                    (rf"(?<=[{v}])([{c1}])", rf"{semi_slc}{c1}"),
-                    (rf"^[{v}]([{c1}])", rf"{semi_slc}{c1}"),
-                    (rf"[{v}]([{c1}])$", rf"{semi_slc}{c1}"),
-                    (rf"(?<=[{v}])([{c1}])", lambda _: ""),
-                ]
-                psb_slc = choice(possibilidades)
-                
-            elif estrutura_slc == "CV":
-                c1 = selecionar("C")
-                v1 = selecionar("V")
-                v2 = selecionar("V")
-                possibilidades = [
-                    (rf"(?<=[{c1}])([{v1}])", rf"{v2}"),
-                    (rf"^[{c1}]([{v1}])", rf"{v2}"),
-                    (rf"[{c1}]([{v1}])$", rf"{v2}"),
-                ]
-                psb_slc = choice(possibilidades)
-                
-            elif estrutura_slc == "VV":
-                v1 = selecionar("V")
-                v2 = selecionar("V")
-                v3 = selecionar("V")
-                semi_vogais = list("wj")
-                semi_slc = choice(semi_vogais)
-                possibilidades = [
-                    (rf"(?<=[{v1}])([{v2}])", rf"{v3}"),
-                    (rf"^[{v1}]([{v2}])", rf"{v3}"),
-                    (rf"[{v1}]([{v2}])$", rf"{v3}"),
-                    (rf"(?<=[{v1}])([{v2}])", rf"{semi_slc}\g<1>"),
-                    (rf"^[{v1}]([{v2}])", rf"{semi_slc}\g<1>"),
-                    (rf"[{v1}]([{v2}])$", rf"{semi_slc}\g<1>"),
-                ]
-                psb_slc = choice(possibilidades)
-                
-            elif estrutura_slc == "CC":
-                c1 = selecionar("C")
-                c2 = selecionar("C")
-                c3 = selecionar("C")
-                possibilidades = [
-                    # 1. Substituição de c2 por c3
-                    (rf"(?<=[{c1}])([{c2}])", rf"{c3}"),
-                    (rf"^[{c1}]([{c2}])", rf"{c3}"),
-                    (rf"[{c1}]([{c2}])$", rf"{c3}"),
-
-                    # 2. Apagamento / Síncope de c2
-                    (rf"(?<=[{c1}])([{c2}])", lambda _: ""),
-                    (rf"^[{c1}]([{c2}])", lambda _: ""),
-                    (rf"[{c1}]([{c2}])$", lambda _: ""),
-
-                    # 3. Metátese (Inversão de posição entre c1 e c2)
-                    (rf"([{c1}])([{c2}])", lambda m: f"{m.group(2)}{m.group(1)}"),
-                    (rf"^([{c1}])([{c2}])", lambda m: f"{m.group(2)}{m.group(1)}"),
-                    (rf"([{c1}])([{c2}])$", lambda m: f"{m.group(2)}{m.group(1)}"),
-
-                    # 4. Modificação em c2 (Altera c2 dependendo da sonoridade de c2)
-                    (rf"^[{c1}]([{c2}])", lambda m: 
-                        tools.retornar_aproximante(m.group(1), "sonora", 2) 
-                        if "surda" in tools.verificar_classe(c2)
-                        else tools.retornar_aproximante(m.group(1), "surda", 2)
-                    ),
-                    (rf"[{c1}]([{c2}])$", lambda m: 
-                        tools.retornar_aproximante(m.group(1), "sonora", 2) 
-                        if "surda" in tools.verificar_classe(c2)
-                        else tools.retornar_aproximante(m.group(1), "surda", 2)
-                    ),
-
-                    # 5. Modificação em c1 (Altera c1 dependendo da sonoridade de c1)
-                    (rf"^([{c1}])[{c2}]", lambda m: 
-                        tools.retornar_aproximante(m.group(1), "sonora", 2) 
-                        if "surda" in tools.verificar_classe(c1)
-                        else tools.retornar_aproximante(m.group(1), "surda", 2)
-                    ),
-                    (rf"([{c1}])[{c2}]$", lambda m: 
-                        tools.retornar_aproximante(m.group(1), "sonora", 2) 
-                        if "surda" in tools.verificar_classe(c1)
-                        else tools.retornar_aproximante(m.group(1), "surda", 2)
-                    ),
-                ]
-                psb_slc = choice(possibilidades)
-                
-            elif estrutura_slc == "V":
-                v1 = selecionar("V")
-                v2 = selecionar("V")
-                possibilidades = [
-                    (rf"^([{v1}])", rf"{v2}"),
-                    (rf"([{v1}])$", rf"{v2}"),
-                    (rf"^([{v1}])", r"h\g<1>"),
-                    (rf"([{v1}])$", r"\g<1>h"),
-                ]
-                psb_slc = choice(possibilidades)
-                
-            else:
-                c1 = selecionar("C")
-                c2 = selecionar("C")
-                possibilidades = [
-                    (rf"^([{c1}])", rf"{c2}"),
-                    (rf"[{c1}]$", rf"{c2}"),
-                    (rf"^([{c1}])", lambda m: tools.retornar_aproximante(m.group(1), "sonora", 2) 
-                        if("surda" in tools.verificar_classe(c1)) 
-                        else tools.retornar_aproximante(m.group(1), "surda", 2)
-                    ),
-                    (rf"([{c1}])$", lambda m: tools.retornar_aproximante(m.group(1), "sonora", 2) 
-                        if("surda" in tools.verificar_classe(c1))
-                        else tools.retornar_aproximante(m.group(1), "surda", 2)
-                    ),
-                    (rf"^([{c1}])|([{c1}])$", lambda m: tools.retornar_aproximante(m.group(1), "sonora", 2) 
-                        if("surda" in tools.verificar_classe(c1))
-                        else tools.retornar_aproximante(m.group(1), "surda", 2)
-                    ),
-                ]
-                psb_slc = choice(possibilidades)
-                
-            return psb_slc
-
-        gramatica = descritivo["gramatica"]
-        if "a_regra" not in gramatica:
-            gramatica["a_regra"] = {}
-        
-        ultima_regra = max(gramatica["a_regra"].keys()) + 1 if gramatica["a_regra"] else 0
-        estrutura_slc = estrutura()
-        # print(estrutura_slc)
-        gramatica["a_regra"][ultima_regra] = estrutura_slc
+        except Exception as e:
+            return None
 
     def efetuar_regra(self, lingua:str, word:str)->str:
         """
@@ -1325,11 +1135,9 @@ class FamiliaLinguistica:
                 # silaba_tonica:str = descritivo["gramatica"]["silaba_tonica"]
                 for i in dicionario.keys():
                     palavra = dicionario[i]["palavra"]
-                    if("a_regra" in descritivo["gramatica"] and random()>0.4):
-                        palavra = self.efetuar_regra(nome, palavra)
                     palavra = ajustar_palavra(nome, palavra)
                     dicionario[i]["palavra"] = self.implementar_efeitos(nome, palavra)
-                self.gerar_nova_palavra(nome, 100)
+                self.gerar_neologismo(nome, 10)
 
                 if("a_regra" in descritivo["gramatica"] and random()>0.95):
                     a_regra = descritivo["gramatica"]["a_regra"]
@@ -1356,7 +1164,7 @@ class FamiliaLinguistica:
                         self.assimilar_gramatica(ramo, caso)
                 self.lenicao_gramatical()
             self._perder_significado_()
-            self._ver_sons_dialetos()
+            # self._ver_sons_dialetos()
             self.iteracoes+=1
 
     def contar_significados(self, lingua:str, buscar_palavra:str)->int:

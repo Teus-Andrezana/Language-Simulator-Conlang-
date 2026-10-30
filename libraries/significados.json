@@ -56,10 +56,17 @@
       "fumaca",
       "enseada",
       "baia",
-      "rio",
+      "rio"
+    ],
+    "botanica": [
+      "arvore",
+      "planta",
+      "semente",
+      "ramo",
+      "folha",
+      "raiz",
       "cogumelo"
     ],
-    "botanica": ["arvore", "planta", "semente", "ramo", "folha", "raiz"],
     "espaco": [
       "local",
       "chao",
@@ -131,7 +138,8 @@
       "dividir",
       "vincular",
       "juntar",
-      "evocar"
+      "evocar",
+      "casar"
     ],
     "necessidade": [
       "comer",
@@ -164,7 +172,8 @@
       "proteger",
       "cobrir",
       "por",
-      "moer"
+      "moer",
+      "criar"
     ],
     "desenvolvimento": ["nutrir", "prosperar", "incrementar"]
   },
@@ -192,7 +201,9 @@
       "quente",
       "frio",
       "pesado",
-      "leve"
+      "leve",
+      "fome",
+      "sede"
     ],
     "aspecto": ["branco", "preto", "vermelho", "azul", "amarelo"],
     "caracteristica": [

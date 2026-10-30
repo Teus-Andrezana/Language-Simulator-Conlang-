@@ -275,18 +275,18 @@
     },
     "s": {
       "classe": ["alveolar", "fricativa", "surda"],
-      "possibilidades": ["s", "ʦ", "z", "θ"],
-      "chances": [70, 10, 10, 10]
+      "possibilidades": ["s", "z"],
+      "chances": [70, 10]
     },
     "z": {
       "classe": ["alveolar", "fricativa", "sonora"],
-      "possibilidades": ["z", "ð", "ʣ"],
-      "chances": [80, 10, 10]
+      "possibilidades": ["z", "s"],
+      "chances": [80, 10]
     },
     "ʃ": {
       "classe": ["pos-alveolar", "fricativa", "surda"],
-      "possibilidades": ["ʃ", "s", "h", "x", "ʒ", "ɕ"],
-      "chances": [80, 44, 30, 20, 16, 6]
+      "possibilidades": ["ʃ", "s", "h", "ʒ"],
+      "chances": [80, 44, 30, 20]
     },
     "ʒ": {
       "classe": ["pos-alveolar", "fricativa", "sonora"],
@@ -1165,5 +1165,5 @@
       "chances": [70, 60, 50, 30, 10]
     }
   },
-  "estrutura": ["VCVC", "CVCV", "VCVCV", "CVCVC", "CVCCV", "VCCVC"]
+  "estrutura": ["VCVC", "CVCV", "VCVCV", "CVCVC"]
 }
